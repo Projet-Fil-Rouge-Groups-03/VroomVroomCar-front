@@ -1,74 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
+
 @plugin "daisyui";
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap");
 
-:root {
-  /* Couleurs */
-  --color-background: #f9f9f9;
-  --color-police: #171717;
-  --color-yellow: #ffba52;
-  --color-orange: #ef6713;
-  --color-green: #a8d5ba;
-  --color-table-bg: #f1f1f1;
-  --color-table-border: #b9b9b9;
-
-  /* Polices */
-  --font-police: "Montserrat", sans-serif;
-  --font-title: "Playfair Display", serif;
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  font-family: var(--font-police);
-  background-color: var(--color-background);
-  color: var(--color-police);
-  height: 100%;
-}
-
-/* Styles des titres */
-h1 {
-  font-family: var(--font-title);
-  font-size: 2rem;
-  color: var(--color-police);
-  font-weight: 500;
-}
-
-h2 {
-  font-family: var(--font-title);
-  font-size: 1.25rem;
-  color: var(--color-police);
-  font-weight: 500;
-}
-
+/* Styles des boutons et autres composants */
 @layer utilities {
   /* Couleurs personnalisées */
   .bg-background {
     background-color: var(--color-background);
   }
-
   .bg-police {
     background-color: var(--color-police);
   }
-
   .bg-yellow {
     background-color: var(--color-yellow);
   }
-
   .bg-orange {
     background-color: var(--color-orange);
   }
-
+  .bg-navFooter {
+    background-color: rgba(255, 186, 82, 0.5);
+  }
   .bg-green {
     background-color: var(--color-green);
   }
-
   .bg-table-bg {
     background-color: var(--color-table-bg);
   }
@@ -77,19 +41,15 @@ h2 {
   .text-background {
     color: var(--color-background);
   }
-
   .text-police {
     color: var(--color-police);
   }
-
   .text-yellow {
     color: var(--color-yellow);
   }
-
   .text-orange {
     color: var(--color-orange);
   }
-
   .text-green {
     color: var(--color-green);
   }
@@ -98,7 +58,6 @@ h2 {
   .border-green {
     border-color: var(--color-green);
   }
-
   .border-table-border {
     border-color: var(--color-table-border);
   }
@@ -107,7 +66,6 @@ h2 {
   .font-police {
     font-family: var(--font-police);
   }
-
   .font-title {
     font-family: var(--font-title);
   }
@@ -131,6 +89,45 @@ h2 {
     text-decoration: none;
     transition: all 0.2s ease-in-out;
     filter: drop-shadow(0.0625rem 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2));
+  }
+
+  :root {
+    /* Couleurs */
+    --color-background: #f9f9f9;
+    --color-police: #171717;
+    --color-yellow: #ffba52;
+    --color-orange: #ef6713;
+    --color-green: #a8d5ba;
+    --color-table-bg: #f1f1f1;
+    --color-table-border: #b9b9b9;
+
+    /* Polices */
+    --font-police: "Montserrat", sans-serif;
+    --font-title: "Playfair Display", serif;
+  }
+
+  html,
+  body {
+    font-family: var(--font-police);
+    background-color: var(--color-background);
+    color: var(--color-police);
+    height: 100%;
+  }
+
+  /* Styles des titres */
+  h1,
+  h2 {
+    font-family: var(--font-title);
+    color: var(--color-police);
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
   }
 
   .btn-primary:hover {
@@ -237,10 +234,23 @@ h2 {
   .table-vroom tbody tr:hover {
     background-color: rgba(168, 213, 186, 0.1);
   }
+
 }
 
-/* Assure que le background reste cohérent */
+
 .page-container {
   min-height: 100vh;
   background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.container{
+  width: 90%;
+  /* max-width: 1440px; */
+  margin: 0 auto;
 }
