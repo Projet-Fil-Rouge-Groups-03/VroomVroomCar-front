@@ -19,7 +19,7 @@ export class AuthService {
   // L'Observable public que les composants utiliseront pour réagir aux changements
   public user$ = this.userSubject.asObservable();
   
-  // Un observable pour savoir si l'état est en cours de restauration (utile pour afficher un spinner au démarrage)
+  // Un observable pour savoir si l'état est en cours de restauration (utile pour afficher un spinner au démarrage, on verra si on a le temps)
   private isRestoringSession = new BehaviorSubject<boolean>(true);
   public isRestoringSession$ = this.isRestoringSession.asObservable();
 
