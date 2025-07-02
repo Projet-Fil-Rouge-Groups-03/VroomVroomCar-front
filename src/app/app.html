@@ -1,45 +1,7 @@
-<!-- Exemples d'utilisation -->
-
-<!-- Titres -->
-<h1>VroomVroomCar</h1>
-<h2>Mes prochains covoit</h2>
-
-<!-- Boutons -->
-<button class="btn-primary">Valider</button>
-<button class="btn-modal">Confirmer</button>
-
-<!-- Inputs -->
-<input type="text" class="input-small" placeholder="Rechercher..." />
-<input type="email" class="input-large w-full" placeholder="Votre email" />
-
-<!-- Tableau -->
-<table class="table-vroom">
-  <thead>
-    <tr>
-      <th>Départ</th>
-      <th>Arrivée</th>
-      <th>Date</th>
-      <th>Places</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Paris</td>
-      <td>Lyon</td>
-      <td>30/06/2025</td>
-      <td>3</td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- Container de page -->
 <div class="page-container">
-  <!-- Ton contenu ici -->
-</div>
-
-<!-- A supprimer jusqu'ici pour démarrer (vrai) projet ! -->
-<div class="page-container">
-  <app-header />
-  <router-outlet></router-outlet>
-  <app-footer />
+  <app-header></app-header>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
 </div>
