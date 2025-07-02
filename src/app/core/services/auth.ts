@@ -64,7 +64,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this.userSubject.next(null);
-        this.router.navigate(['']);
+        this.router.navigate(['/']);
       })
     );
   }
