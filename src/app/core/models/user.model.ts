@@ -1,7 +1,7 @@
 export enum UserStatus {
-  ADMIN = 'ROLE_ADMIN',
-  ACTIF = 'ROLE_ACTIF',
-  BANNI = 'ROLE_BANNI'
+  ADMIN = 'ADMIN',
+  ACTIF = 'ACTIF',
+  BANNI = 'BANNI'
 }
 
 export interface User {
