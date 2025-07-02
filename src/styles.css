@@ -4,14 +4,6 @@
 @plugin "daisyui";
 
 
-@layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-}
-
 /* Styles des boutons et autres composants */
 @layer utilities {
   /* Couleurs personnalisées */
