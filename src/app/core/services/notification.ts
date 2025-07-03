@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class Notification {
+export class NotificationService {
     private apiURL = `${environment.apiUrl}/api/notifications`;
 
   constructor(private http: HttpClient) { }
