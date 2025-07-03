@@ -12,8 +12,8 @@
   .bg-police {
     background-color: var(--color-police);
   }
-  .bg-yellow {
-    background-color: var(--color-yellow);
+  .bg-light-orange {
+    background-color: var(--color-light-orange);
   }
   .bg-orange {
     background-color: var(--color-orange);
@@ -35,8 +35,8 @@
   .text-police {
     color: var(--color-police);
   }
-  .text-yellow {
-    color: var(--color-yellow);
+  .text-light-orange {
+    color: var(--color-light-orange);
   }
   .text-orange {
     color: var(--color-orange);
@@ -86,7 +86,7 @@
     /* Couleurs */
     --color-background: #f9f9f9;
     --color-police: #171717;
-    --color-yellow: #ffba52;
+    --color-light-orange: #ffba52;
     --color-orange: #ef6713;
     --color-green: #a8d5ba;
     --color-table-bg: #f1f1f1;
@@ -131,7 +131,6 @@
     width: 9.375rem;
     height: 2.5rem;
     background-color: var(--color-green);
-    color: white;
     border-radius: 0.375rem;
     border: none;
     cursor: pointer;
@@ -160,6 +159,12 @@
     color: var(--color-police);
     outline: none;
     transition: all 0.2s ease-in-out;
+  }
+
+   .field {
+    border: 2px solid var(--color-light-orange);
+    border-radius: 6px;
+    padding: 0.5rem;
   }
 
   .input-small:focus {
@@ -225,6 +230,7 @@
   .table-vroom tbody tr:hover {
     background-color: rgba(168, 213, 186, 0.1);
   }
+
 }
 
 .page-container {
@@ -236,6 +242,8 @@
 
 main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -243,3 +251,4 @@ main {
   /* max-width: 1440px; */
   margin: 0 auto;
 }
+ 
