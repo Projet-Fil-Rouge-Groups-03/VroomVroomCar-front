@@ -1,1 +1,166 @@
-<p>header works!</p>
+<header class="bg-navFooter w-full relative">
+  <nav class="w-[95%] mx-auto flex justify-between items-center text-xs">
+    <a routerLink="/" (click)="closeAllMenus()">
+      <img
+        src="assets/icons/logoVroomVroomCar.svg"
+        alt="Logo VroomVroomCar"
+        class="w-[75px]"
+      />
+    </a>
+
+    <div class="flex gap-8 items-center">
+      <!-- ===== BOUTONS PRINCIPAUX (DESKTOP) ===== -->
+      <div class="hidden md:flex gap-2">
+        <a routerLink="/carpooling"
+          ><button class="btn-primary flex gap-1">
+            <img src="assets/icons/search.svg" alt="recherche" />Les co-voit
+          </button></a
+        >
+        <a routerLink="/reservations"
+          ><button class="btn-primary flex gap-1">
+            <img src="assets/icons/search.svg" alt="recherche" />Les voitures
+          </button></a
+        >
+        @if (user$ | async; as user) {
+        <!-- ** CONNECTÉ ** -->
+        <a [routerLink]="['/profil', user.id]">
+          <button class="btn-primary flex gap-1">
+            <img src="assets/icons/icon _plus_.svg" alt="ajouter" />Ajouter un
+            trajet
+          </button>
+        </a>
+        }
+      </div>
+
+      <!-- ===== ACTIONS UTILISATEUR (DESKTOP) ===== -->
+      <div class="hidden md:block">
+        @if (user$ | async; as user) {
+        <!-- ** CONNECTÉ ** -->
+        <div class="connected flex items-center gap-2">
+          <a [routerLink]="['/profil', user.id]">
+            <img
+              src="assets/icons/avatar.svg"
+              alt="avatar connecté"
+              class="h-10 cursor-pointer"
+            />
+          </a>
+          <img
+            (click)="logout()"
+            src="assets/icons/icon _account logout_.svg"
+            alt="deconnexion"
+            class="h-5 cursor-pointer"
+          />
+        </div>
+        } @else {
+        <!-- ** DÉCONNECTÉ ** -->
+        <div
+          class="notConnected items-center flex gap-1 relative cursor-pointer"
+          (click)="toggleProfileMenu()"
+        >
+          <img
+            src="assets/icons/default-avatar-2 3.svg"
+            alt="avatar non connecté"
+            class="h-11"
+          />
+          <img src="assets/icons/icon.svg" alt="menu connexion" />
+          @if (isProfileMenuOpen) {
+          <div
+            class="absolute top-full right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20"
+          >
+            <a
+              routerLink="/auth/login"
+              (click)="closeAllMenus()"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >Connexion</a
+            >
+            <a
+              routerLink="/auth/register"
+              (click)="closeAllMenus()"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+              >Inscription</a
+            >
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- ===== ACTIONS UTILISATEUR (MOBILE) ===== -->
+      <div class="md:hidden flex items-center gap-4">
+        @if (user$ | async; as user) {
+        <!-- ** CONNECTÉ (mobile) ** -->
+        <a [routerLink]="['/profil', user.id]">
+          <img
+            src="assets/icons/avatar.svg"
+            alt="avatar connecté"
+            class="h-10 cursor-pointer"
+          />
+        </a>
+        } @else {
+        <!-- ** DÉCONNECTÉ (mobile) ** -->
+        <img
+          src="assets/icons/default-avatar-2 3.svg"
+          alt="avatar connexion"
+          class="h-11"
+        />
+        }
+
+        <button (click)="toggleMobileMenu()">
+          <img
+            src="assets/icons/menu.svg"
+            alt="menu"
+            class="h-10 cursor-pointer"
+          />
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== PANNEAU DU MENU MOBILE  ===== -->
+  @if (isMobileMenuOpen) {
+  <div
+    class="md:hidden absolute top-full left-0 w-full bg-white shadow-lg z-10"
+  >
+    <div class="flex flex-col p-4 gap-4">
+      <a
+        routerLink="/carpooling"
+        (click)="closeAllMenus()"
+        class="cursor-pointer"
+      >
+        Les co-voit</a
+      >
+      <a
+        routerLink="/reservations"
+        (click)="closeAllMenus()"
+        class="cursor-pointer"
+        >Les voitures</a
+      >
+      <hr class="border-gray-500" />
+      <!-- ** CONNECTÉ (mobile) ** -->
+      @if (user$ | async; as user) {
+      <a
+        [routerLink]="['/profil', user.id]"
+        (click)="closeAllMenus()"
+        class="cursor-pointer"
+        >Ajouter un trajet</a
+      >
+      <a (click)="logout()" class="cursor-pointer">Déconnexion</a>
+      } @else {
+      <!-- ** DÉCONNECTÉ (mobile) ** -->
+      <a
+        routerLink="/auth/login"
+        (click)="closeAllMenus()"
+        class="cursor-pointer"
+        >Connexion</a
+      >
+      <a
+        routerLink="/auth/register"
+        (click)="closeAllMenus()"
+        class="cursor-pointer"
+        >Inscription</a
+      >
+      }
+    </div>
+  </div>
+  }
+</header>
