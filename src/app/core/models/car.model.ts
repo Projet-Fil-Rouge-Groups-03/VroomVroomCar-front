@@ -31,3 +31,17 @@ export interface Car {
   categorie: CategorieVehicule;
   co2ParKm: number;
 }
+
+export interface CarRequest {
+  id?: number;
+  marque: string;
+  modele: string;
+  nbDePlaces: number;
+  pollution?: string;
+  infosSupp?: string;
+  utilisateurId: number;
+  utilisateurNom: string;
+  motorisation: Motorisation;
+  categorie: CategorieVehicule;
+  co2ParKm?: number;
+}
