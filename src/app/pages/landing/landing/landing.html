@@ -1,1 +1,25 @@
-<p>landing works!</p>
+<app-hero></app-hero>
+<div class="m-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-32 max-w-7xl mx-auto">
+        <div class="relative overflow-hidden rounded-2xl shadow-lg h-75 flex items-center justify-center mb-10 md:mb-0 ">
+            <!--Background de la carte-->
+            <div class="absolute inset-0 bg-[url('/assets/images/carpooling-background.jpg')] bg-cover bg-center bg-no-repeat h-full"></div>
+            <div class="absolute inset-0 bg-black/40"></div>
+            <!--Contenue de la carte-->
+            <a routerLink="/carpooling" class="inset-0 p-8 z-10">
+                <h2 class="text-white text-4xl font-semibold drop-shadow-lg text-center">Voir les co-voiturages</h2>
+            </a>
+        </div>
+        <div class="relative overflow-hidden rounded-2xl shadow-lg h-75 flex items-center justify-center" >
+            <!--Background de la carte-->
+            <div class="absolute inset-0 bg-[url('/assets/images/companyCar-background.jpg')] bg-cover bg-center bg-no-repeat h-full"></div>
+            <div class="absolute inset-0 bg-black/40"></div>
+            <!--Contenue de la carte-->
+            <a routerLink="/reservations" class="inset-0  p-8 z-10">
+                <h2 class="text-white text-4xl font-semibold drop-shadow-lg text-center">Voir les véhicules de services</h2>
+            </a>
+        </div>
+    </div>
+</div>
+
+
