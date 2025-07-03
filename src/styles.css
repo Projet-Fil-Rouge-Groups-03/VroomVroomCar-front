@@ -3,7 +3,6 @@
 
 @plugin "daisyui";
 
-
 /* Styles des boutons et autres composants */
 @layer utilities {
   /* Couleurs personnalisées */
@@ -66,7 +65,7 @@
 @layer components {
   /* Bouton principal commun */
   .btn-primary {
-    width: 10rem;
+    width: 9rem;
     height: 2.1875rem;
     background-color: var(--color-orange);
     color: white;
@@ -226,9 +225,7 @@
   .table-vroom tbody tr:hover {
     background-color: rgba(168, 213, 186, 0.1);
   }
-
 }
-
 
 .page-container {
   min-height: 100vh;
@@ -241,7 +238,7 @@ main {
   flex: 1;
 }
 
-.container{
+.container {
   width: 90%;
   /* max-width: 1440px; */
   margin: 0 auto;
