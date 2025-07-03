@@ -9,7 +9,7 @@ import { CompanyCar } from '../models/company-car.model';
   providedIn: 'root'
 })
 export class CompanyCarService {
-  private apiURL = `${environment.apiUrl}/api/trips`;
+  private apiURL = `${environment.apiUrl}/api/company-cars`;
 
   constructor(private http : HttpClient) { }
 

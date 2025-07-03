@@ -9,7 +9,7 @@ import { CompanyCar, VehiculeStatus } from "../models/company-car.model";
 describe('CompanyCarService', () => {
   let service: CompanyCarService;
   let httpMock: HttpTestingController;
-  const apiURL = `${environment.apiUrl}/api/trips`;
+  const apiURL = `${environment.apiUrl}/api/company-cars`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
