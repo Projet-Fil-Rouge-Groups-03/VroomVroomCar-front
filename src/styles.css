@@ -185,7 +185,7 @@
   }
 
   .input-large:focus {
-    border-color: var(--color-orange);
+    border-color: var(--color-light-orange);
     box-shadow: 0 0 0 0.125rem rgba(168, 213, 186, 0.2);
   }
 

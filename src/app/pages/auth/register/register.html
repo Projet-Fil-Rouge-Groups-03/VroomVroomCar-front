@@ -2,89 +2,303 @@
   class="flex-1 bg-[url('/assets/images/background.svg')] bg-cover bg-left bg-no-repeat flex items-center justify-center p-4 sm:p-6"
 >
   <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <div class="p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+    <div class="p-6 sm:p-8 max-h-[90vh] overflow-y-auto font-medium">
       
-      <!-- On connecte le formulaire et la méthode onSubmit -->
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6" novalidate>
         
         <h1 class="text-2xl font-bold text-center">S'inscrire</h1>
+
+        <!-- Message d'erreur global -->
+        @if (errorMessage) {
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {{ errorMessage }}
+          </div>
+        }
 
         <!-- Groupe User -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label for="nom" class="block font-medium mb-1">Nom</label>
-            <input type="text" id="nom" formControlName="nom" class="input-large w-full" />
+            <label for="nom" class="block mb-1">Nom *</label>
+            <input 
+              type="text" 
+              id="nom" 
+              formControlName="nom" 
+              class="input-large w-full"
+              [class.border-red-500]="isFieldInvalid('nom')"
+            />
+            @if (isFieldInvalid('nom')) {
+              <div class="text-red-500 text-sm mt-1">
+                {{ getFieldError('nom') }}
+              </div>
+            }
           </div>
           <div>
-            <label for="prenom" class="block font-medium mb-1">Prénom</label>
-            <input type="text" id="prenom" formControlName="prenom" class="input-large w-full" />
+            <label for="prenom" class="block mb-1">Prénom *</label>
+            <input 
+              type="text" 
+              id="prenom" 
+              formControlName="prenom" 
+              class="input-large w-full"
+              [class.border-red-500]="isFieldInvalid('prenom')"
+            />
+            @if (isFieldInvalid('prenom')) {
+              <div class="text-red-500 text-sm mt-1">
+                {{ getFieldError('prenom') }}
+              </div>
+            }
           </div>
         </div>
+
         <div>
-          <label for="email" class="block font-medium mb-1">Mail</label>
-          <input type="email" id="email" formControlName="email" class="input-large w-full" />
+          <label for="libelle" class="block mb-1">Libellé *</label>
+          <input 
+            type="text" 
+            id="libelle" 
+            autocomplete="street-address"
+            formControlName="libelle" 
+            class="input-large w-full"
+            [class.border-red-500]="isFieldInvalid('libelle')"
+          />
+          @if (isFieldInvalid('libelle')) {
+            <div class="text-red-500 text-sm mt-1">
+              {{ getFieldError('libelle') }}
+            </div>
+          }
         </div>
-        <div>
-          <label for="password" class="block font-medium mb-1">Mot de passe</label>
-          <input type="password" id="password" formControlName="motDePasse" class="input-large w-full" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="codePostal" class="block mb-1">Code postal *</label>
+            <input 
+              type="text" 
+              id="codePostal" 
+              formControlName="codePostal" 
+              class="input-large w-full"
+              [class.border-red-500]="isFieldInvalid('codePostal')"
+            />
+            @if (isFieldInvalid('codePostal')) {
+              <div class="text-red-500 text-sm mt-1">
+                {{ getFieldError('codePostal') }}
+              </div>
+            }
+          </div>
+          <div>
+            <label for="ville" class="block mb-1">Ville *</label>
+            <input 
+              type="text" 
+              id="ville" 
+              formControlName="ville" 
+              class="input-large w-full"
+              [class.border-red-500]="isFieldInvalid('ville')"
+            />
+            @if (isFieldInvalid('ville')) {
+              <div class="text-red-500 text-sm mt-1">
+                {{ getFieldError('ville') }}
+              </div>
+            }
+          </div>
         </div>
+
         <div>
-          <label for="password-confirm" class="block font-medium mb-1">Confirmer mot de passe</label>
-          <input type="password" id="password-confirm" formControlName="confirmerMotDePasse" class="input-large w-full" />
+          <label for="mail" class="block mb-1">Email *</label>
+          <input 
+            type="email" 
+            id="mail" 
+            formControlName="mail" 
+            class="input-large w-full"
+            [class.border-red-500]="isFieldInvalid('mail')"
+          />
+          @if (isFieldInvalid('mail')) {
+            <div class="text-red-500 text-sm mt-1">
+              {{ getFieldError('mail') }}
+            </div>
+          }
+        </div>
+
+        <div>
+          <label for="password" class="block mb-1">Mot de passe *</label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="motDePasse" 
+            class="input-large w-full "
+            [class.border-red-500]="isFieldInvalid('motDePasse')"
+            placeholder=""
+          />
+          @if (isFieldInvalid('motDePasse')) {
+            <div class="text-red-500 text-sm mt-1">
+              {{ getFieldError('motDePasse') }}
+            </div>
+          }
+          <div class="text-xs text-gray-500 mt-1">
+            Minimum 8 caractères avec majuscule, minuscule, chiffre et caractère spécial.
+          </div>
+        </div>
+
+        <div>
+          <label for="password-confirm" class="block mb-1">Confirmer mot de passe *</label>
+          <input 
+            type="password" 
+            id="password-confirm" 
+            formControlName="confirmerMotDePasse" 
+            class="input-large w-full"
+            [class.border-red-500]="isFieldInvalid('confirmerMotDePasse') || registerForm.errors?.['passwordMismatch']"
+          />
+          @if (isFieldInvalid('confirmerMotDePasse')) {
+            <div class="text-red-500 text-sm mt-1">
+              {{ getFieldError('confirmerMotDePasse') }}
+            </div>
+          }
+          @if (getPasswordConfirmError()) {
+            <div class="text-red-500 text-sm mt-1">
+              {{ getPasswordConfirmError() }}
+            </div>
+          }
         </div>
 
         <!-- Section Véhicule -->
-        <fieldset class="border-t pt-4">
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="ajouterVehicule" formControlName="ajouterVehicule" class="h-4 w-4 rounded">
-                <label for="ajouterVehicule" class="font-medium">Ajouter un véhicule (optionnel)</label>
+        <fieldset class="field pt-4">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="ajouterVehicule" formControlName="ajouterVehicule" class="h-4 w-4 rounded">
+            <label for="ajouterVehicule" class="">Ajouter mon véhicule (optionnel)</label>
+          </div>
+          
+          <!-- Le groupe de formulaire pour le véhicule -->
+          <div formGroupName="vehicule" class="flex flex-col gap-4 mt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="marque" class="block text-sm mb-1">
+                  Marque
+                  @if (registerForm.get('ajouterVehicule')?.value) {
+                    <span class="text-red-500">*</span>
+                  }
+                </label>
+                <input 
+                  type="text" 
+                  id="marque" 
+                  formControlName="marque" 
+                  class="input-large w-full"
+                  [class.border-red-500]="isVehicleFieldInvalid('marque')"
+                />
+                @if (isVehicleFieldInvalid('marque')) {
+                  <div class="text-red-500 text-sm mt-1">
+                    {{ getVehicleFieldError('marque') }}
+                  </div>
+                }
+              </div>
+              <div>
+                <label for="modele" class="block text-sm mb-1">
+                  Modèle
+                  @if (registerForm.get('ajouterVehicule')?.value) {
+                    <span class="text-red-500">*</span>
+                  }
+                </label>
+                <input 
+                  type="text" 
+                  id="modele" 
+                  formControlName="modele" 
+                  class="input-large w-full"
+                  [class.border-red-500]="isVehicleFieldInvalid('modele')"
+                />
+                @if (isVehicleFieldInvalid('modele')) {
+                  <div class="text-red-500 text-sm mt-1">
+                    {{ getVehicleFieldError('modele') }}
+                  </div>
+                }
+              </div>
             </div>
-            
-            <!-- Le groupe de formulaire pour le véhicule -->
-            <div formGroupName="vehicule" class="flex flex-col gap-4 mt-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="marque" class="block text-sm font-medium mb-1">Marque</label>
-                        <input type="text" id="marque" formControlName="marque" class="input-large w-full" />
-                    </div>
-                    <div>
-                        <label for="modele" class="block text-sm font-medium mb-1">Modèle</label>
-                        <input type="text" id="modele" formControlName="modele" class="input-large w-full" />
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="motorisation" class="block text-sm font-medium mb-1">Motorisation</label>
-                        <select id="motorisation" formControlName="motorisation" class="input-large w-full">
-                            <option value="" disabled>Sélectionner...</option>
-                            @for (motor of motorisations; track $index) {
-                                <option  [value]="motor">{{ motor }}</option>
-                            }
-                        </select>
-                    </div>
-                    <div>
-                        <label for="nbDePlaces" class="block text-sm font-medium mb-1">Places restantes</label>
-                        <input type="number" id="nbDePlaces" formControlName="nbDePlaces" class="input-large w-full" />
-                    </div>
-                </div>
-                <div>
-                    <label for="categorie" class="block text-sm font-medium mb-1">Catégorie</label>
-                    <select id="categorie" formControlName="categorie" class="input-large w-full">
-                        <option value="" disabled>Sélectionner...</option>
-                        <!-- LA MAGIE EST ICI -->
-                         @for (cat of categories; track $index) {
-                             <option  [value]="cat">{{ cat.replace(/_/g, ' ') | titlecase }}</option>
-                         }
-                    </select>
-                </div>
-                <div>
-                    <label for="infosSupp" class="block text-sm font-medium mb-1">Infos supp :</label>
-                    <textarea id="infosSupp" formControlName="infosSupp" class="input-large w-full resize-none" rows="3"></textarea>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="motorisation" class="block text-sm mb-1">
+                  Motorisation
+                  @if (registerForm.get('ajouterVehicule')?.value) {
+                    <span class="text-red-500">*</span>
+                  }
+                </label>
+                <select 
+                  id="motorisation" 
+                  formControlName="motorisation" 
+                  class="input-large w-full"
+                  [class.border-red-500]="isVehicleFieldInvalid('motorisation')"
+                >
+                  <option value="" disabled>Sélectionner...</option>
+                  @for (motor of motorisations; track $index) {
+                    <option [value]="motor">{{ motor }}</option>
+                  }
+                </select>
+                @if (isVehicleFieldInvalid('motorisation')) {
+                  <div class="text-red-500 text-sm mt-1">
+                    {{ getVehicleFieldError('motorisation') }}
+                  </div>
+                }
+              </div>
+              <div>
+                <label for="nbDePlaces" class="block text-sm mb-1">
+                  Places restantes
+                  @if (registerForm.get('ajouterVehicule')?.value) {
+                    <span class="text-red-500">*</span>
+                  }
+                </label>
+                <input 
+                  type="number" 
+                  id="nbDePlaces" 
+                  formControlName="nbDePlaces" 
+                  class="input-large w-full"
+                  [class.border-red-500]="isVehicleFieldInvalid('nbDePlaces')"
+                  min="1"
+                  max="8"
+                />
+                @if (isVehicleFieldInvalid('nbDePlaces')) {
+                  <div class="text-red-500 text-sm mt-1">
+                    {{ getVehicleFieldError('nbDePlaces') }}
+                  </div>
+                }
+              </div>
             </div>
+            <div>
+              <label for="categorie" class="block text-sm mb-1">
+                Catégorie
+                @if (registerForm.get('ajouterVehicule')?.value) {
+                  <span class="text-red-500">*</span>
+                }
+              </label>
+              <select 
+                id="categorie" 
+                formControlName="categorie" 
+                class="input-large w-full"
+                [class.border-red-500]="isVehicleFieldInvalid('categorie')"
+              >
+                <option value="" disabled>Sélectionner...</option>
+                @for (cat of categories; track $index) {
+                  <option [value]="cat">{{ formatCategory(cat) | titlecase }}</option>
+                }
+              </select>
+              @if (isVehicleFieldInvalid('categorie')) {
+                <div class="text-red-500 text-sm mt-1">
+                  {{ getVehicleFieldError('categorie') }}
+                </div>
+              }
+            </div>
+            <div>
+              <label for="infosSupp" class="block text-sm mb-1">Infos supplémentaires (optionnel)</label>
+              <textarea 
+                id="infosSupp" 
+                formControlName="infosSupp" 
+                class="input-large w-full resize-none placeholder-gray-400" 
+                rows="3"
+                placeholder="Informations complémentaires sur votre véhicule..."
+              ></textarea>
+            </div>
+          </div>
         </fieldset>
         
-        <button type="submit" class="btn-modal self-center mt-4">
+        <button 
+          type="submit" 
+          class="btn-modal self-center mt-4"
+          [disabled]="registerForm.invalid"
+          [class.opacity-50]="registerForm.invalid"
+        >
+          S'inscrire
         </button>
       </form>
     </div>
