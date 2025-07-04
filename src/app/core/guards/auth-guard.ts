@@ -1,44 +1,43 @@
-// src/app/guards/auth.guard.ts
-
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth';
 import { UserStatus } from '../models/user.model';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
 
 export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> => {
   
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.user$.pipe(
+  return authService.isRestoringSession$.pipe(
+    filter(isRestoring => !isRestoring), 
     take(1), 
+    switchMap(() => authService.user$),
+    
     map(user => {
-
-      // Gérer le cas de l'utilisateur banni
-      if (user && user.status === UserStatus.BANNI) {
+      // Cas 1 : Utilisateur banni
+      if (user && user.status.toUpperCase() === UserStatus.BANNI) {
+        console.log('AuthGuard: Utilisateur banni. Redirection vers /');
         return state.url === '/' ? true : router.createUrlTree(['/']);
       }
-      
       const requiredRoles = route.data['requiredRoles'] as UserStatus[];
 
-      // Vérifier si l'utilisateur est connecté
+      // Cas 2 : Utilisateur connecté
       if (user) {
         if (!requiredRoles || requiredRoles.length === 0) {
           return true;
         }
-        
         if (requiredRoles.some(role => authService.hasRole(role))) {
+          console.log(`AuthGuard: Accès autorisé pour l'utilisateur avec le rôle ${user.status}.`);
           return true;
-        } else {
-          console.log('Accès non autorisé (rôle insuffisant), redirection vers /');
-          return router.createUrlTree(['/']);
-        }
+        } 
+        console.log(`AuthGuard: Rôle insuffisant (${user.status}). Redirection vers /`);
+        return router.createUrlTree(['/']);
       }
 
-      // L'utilisateur n'est pas connecté.
-      console.log('Accès non autorisé (non connecté), redirection vers /auth/login');
+      // Cas 3 : Personne n'est connecté
+      console.log('AuthGuard: Non connecté. Redirection vers /auth/login');
       return router.createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
     })
   );

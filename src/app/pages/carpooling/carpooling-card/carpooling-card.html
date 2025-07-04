@@ -1,1 +1,61 @@
-<p>carpooling-card works!</p>
+<div
+  class="bg-white min-h-[165px] md:min-h-[150px] rounded-md shadow-md/20 flex flex-col cursor-pointer hover:bg-gray-50"
+>
+  <div class="flex gap-2 p-2 items-start flex-1 relative">
+    <div class="flex gap-2 flex-1 justify-between">
+
+        <div class="flex flex-col justify-between gap-1 md:gap-0 md:flex-row items-start flex-1">
+            <!-- Bloc Aller -->
+            <div class="flex flex-row md:flex-col gap-x-2 w-2/5">
+              <p class="font-medium text-xl">9:00</p>
+              <div>
+                <p class="text-lg">Bordeaux</p>
+                <p class="font-light">Gare Saint-Jean</p>
+              </div> 
+            </div>
+
+            <!-- Bloc temps -->
+            <div class="self-start flex items-center justify-center md:flex-col">
+              <img src="assets/icons/fleche grd.svg" class="hidden md:block -mb-4" />
+              <p class="font-light text-xs">7h</p>
+              <img src="assets/icons/fleche.svg" class="md:hidden" />
+              <p class="font-light text-xs">450km</p>
+            </div>
+
+            <!-- Bloc Retour -->
+            <div class="flex flex-row md:flex-col gap-x-2 w-2/5">
+              <p class="font-medium text-xl">16:00</p>
+              <div>
+                <p class="text-lg">Bordeaux</p>
+                <p class="font-light">VroomVroomCar Bordeaux</p>
+              </div>
+            </div>
+        </div>
+
+      <!-- Bloc CO² -->
+      <div class="md:flex flex-col justify-between items-end hidden ml-1">
+        <img
+          src="assets/icons/add-circle-svgrepo-com 1.svg"
+          class="w-8 md:w-10"
+        />
+        <p class="text-light text-sm text-gray-400 self-end">9.02g CO²</p>
+      </div>
+    </div>
+
+    <img
+      src="assets/icons/add-circle-svgrepo-com 1.svg"
+      class="absolute right-2 md:hidden"
+    />
+  </div>
+
+  <div class="flex bg-green p-1 px-4 items-center justify-between">
+    <!-- ou "assets/images/VS.svg" si c'est une voiture de service -->
+    <div class="flex items-center gap-2">
+      <img src="assets/images/covoit.svg" class="h-10" />
+      <img src="assets/icons/avatar.svg" alt="avatar" class="h-8 pl-6" />
+      <p>Didier Mazier</p>
+    </div>
+    <p class="md:hidden">2 pl.</p>
+    <p class="hidden md:block">2 pl. restantes</p>
+  </div>
+</div>

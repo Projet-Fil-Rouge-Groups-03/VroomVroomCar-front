@@ -214,7 +214,7 @@ export class Register implements OnInit {
           }
         }),
         tap(() => {
-          console.log('Inscription réussie !');
+          this.router.navigate(['/']);
         }),
         catchError((error) => {
         console.error("Erreur lors de l'inscription :", error);

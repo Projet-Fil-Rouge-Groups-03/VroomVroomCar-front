@@ -43,7 +43,10 @@ export class AuthService {
   }
 
   public hasRole(role: UserStatus): boolean {
-    return this.currentUser?.status === role;
+    if (!this.currentUser || !this.currentUser.status) {
+      return false;
+    }
+    return this.currentUser.status.toUpperCase() === role.toUpperCase();
   }
 
   // ---- Les Actions (appels API) ----
@@ -75,12 +78,18 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true, responseType: 'text' }).pipe(
-      tap(() => {
-        this.userSubject.next(null);
-        this.router.navigate(['/']);
-      })
-    );
+    return this.http
+      .post(
+        `${this.apiUrl}/logout`,
+        {},
+        { withCredentials: true, responseType: 'text' }
+      )
+      .pipe(
+        tap(() => {
+          this.userSubject.next(null);
+          this.router.navigate(['/']);
+        })
+      );
   }
 
   /**
