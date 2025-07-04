@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-header',
   imports: [AsyncPipe, RouterLink],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrl: './header.css',
 })
 export class Header {
   user$: Observable<User | null>;
@@ -22,9 +22,17 @@ export class Header {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.closeAllMenus();
+    this.authService.logout().subscribe({
+      next: () => {
+        this.closeAllMenus();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la déconnexion :', err);
+        this.closeAllMenus();
+      },
+    });
   }
+
   toggleProfileMenu(): void {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }

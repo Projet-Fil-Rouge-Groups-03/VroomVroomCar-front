@@ -75,14 +75,12 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http
-      .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
-      .pipe(
-        tap(() => {
-          this.userSubject.next(null);
-          this.router.navigate(['/']);
-        })
-      );
+    return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true, responseType: 'text' }).pipe(
+      tap(() => {
+        this.userSubject.next(null);
+        this.router.navigate(['/']);
+      })
+    );
   }
 
   /**
