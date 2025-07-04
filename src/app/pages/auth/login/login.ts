@@ -14,6 +14,7 @@ import { AuthService } from '../../../core/services/auth';
 })
 export class Login {
   loginForm: FormGroup;
+errorMessage = '';
 
   constructor(private fb: FormBuilder, private as: AuthService) {
     this.loginForm = this.fb.group({
@@ -39,5 +40,23 @@ export class Login {
       this.loginForm.markAllAsTouched();
     }
     
+  }
+  getFieldError(fieldName: string): string {
+    const field = this.loginForm.get(fieldName);
+    if (!field || !field.errors) return '';
+    const errors = field.errors;
+
+    if (errors['required']) return 'Ce champ est obligatoire';
+    if (errors['email']) return 'Format email invalide';
+    if (errors['minLength'])
+      return `Minimum ${errors['minLength'].requiredLength} caractères`;
+    if (errors['pattern']) return 'Format invalide';
+    if (errors['passwordMinLength']) return 'Minimum 8 caractères';
+    if (errors['passwordRequirements']) {
+      return 'Le mot de passe ne respecte pas les critères requis';
+    }
+
+    return '';
+
   }
 }
