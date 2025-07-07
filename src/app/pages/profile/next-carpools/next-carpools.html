@@ -1,1 +1,24 @@
 <p>next-carpools works!</p>
+
+<img
+  src="assets/icons/Add.svg"
+  alt="Logo VroomVroomCar"
+  class="cursor-pointer"
+  (click)="openModalAdd()"
+/>
+<button
+  type="button"
+  title="Modifier le trajet"
+  class="cursor-pointer"
+  >
+  ✏️
+</button>
+<button
+  type="button"
+
+  class="cursor-pointer text-xl"
+  title="Supprimer le tableau"
+>
+  🗑️
+</button>
+<app-add-edit-carpooling-modal #addEditModal (saved)="onCarpoolSaved($event)"></app-add-edit-carpooling-modal>
