@@ -1,1 +1,56 @@
-<p>add-edit-carpooling-modal works!</p>
+<!-- La balise <dialog> est parfaite pour ça -->
+<dialog #carpoolingDetailsModal 
+        class="relative modal-details"
+        (close)="closeModal()"> <!-- L'événement close est émis quand on appuie sur Echap -->
+
+  <form [formGroup]="carpoolingForm" (ngSubmit)="save()">
+
+    <!-- Croix en haut à droite -->
+    <button
+      type="button"
+      class="absolute top-2 right-2 text-[var(--color-police)] cursor-pointer"
+      (click)="closeModal()" 
+      aria-label="Fermer la modale">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+
+    <h1 class="text-center">Organiser un covoit</h1>
+    
+    <!-- Dates -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <input type="date" id="dateDebut" formControlName="dateDebut" class="input-large w-full"/>
+      <input type="date" id="dateFin" formControlName="dateFin" class="input-large w-full"/>
+    </div>
+
+    <!-- Départ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input type="text" id="villeDepart" formControlName="villeDepart" placeholder="Ville de départ" class="input-large w-full"/>
+        <input type="text" id="lieuDepart" formControlName="lieuDepart" placeholder="Lieu de rdv précis" class="input-large w-full"/>
+    </div>
+
+    <!-- Arrivée -->
+    <input type="text" id="villeArrivee" formControlName="villeArrivee" placeholder="Ville d'arrivée" class="input-large w-full"/>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="input-large flex items-center gap-2">
+        <input type="checkbox" id="vehiculePerso" formControlName="vehiculePerso" />
+        <label for="vehiculePerso">Véhicule perso</label>
+      </div>
+      <div class="input-large">
+        <select id="vehiculeService" formControlName="vehiculeService">
+          <option [ngValue]="null" disabled>Véhicule de service</option>
+          <!-- À Remplir avec les véhicules de service -->
+        </select>
+      </div>
+    </div>
+    
+    <!-- Boutons -->
+    <div class="flex justify-end gap-4 mt-8">
+      <button type="button" class="btn-modal-secondary" (click)="closeModal()">Annuler</button>
+      <button type="submit" class="btn-modal-primary">Valider</button>
+    </div>
+
+  </form>
+</dialog>
