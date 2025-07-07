@@ -231,6 +231,24 @@
     background-color: rgba(168, 213, 186, 0.1);
   }
 
+.modal-details {
+  background-color: var(--color-background) !important;
+  color: var(--color-police);
+
+  margin: auto;
+
+  padding: calc(var(--spacing) * 4);
+
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--color-green);
+
+  border-radius: var(--radius-sm);
+}
+.modal-details::backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* Couleur de fond semi-transparente pour le backdrop */
+}
+
 }
 
 .page-container {
