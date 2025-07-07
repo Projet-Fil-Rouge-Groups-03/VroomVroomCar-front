@@ -231,6 +231,21 @@
     background-color: rgba(168, 213, 186, 0.1);
   }
 
+.modal-details {
+  background-color: var(--color-background) !important;
+  color: var(--color-police);
+
+  margin: auto;
+
+  padding: calc(var(--spacing) * 4);
+
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--color-green);
+
+  border-radius: var(--radius-sm);
+}
+
 }
 
 .page-container {
