@@ -1,5 +1,15 @@
+<app-carpooling-filter 
+  [isVisible]="isFilterMenuVisible"
+  (search)="handleSearch($event)">
+</app-carpooling-filter>
 <div class="flex-1 flex flex-col pt-8 lg:pt-0">
 <h1 class="text-center">Rejoignez un covoit !</h1>
+<img
+  src="assets/icons/Filtre.svg"
+  alt="Ouvrir les filtres"
+  class="h-10 cursor-pointer lg:hidden mt-2 ml-2 self-start"
+  (click)="toggleFilterMenu()"
+/>
     <app-carpooling-list></app-carpooling-list>
 </div>
 <app-ad-corner></app-ad-corner>
