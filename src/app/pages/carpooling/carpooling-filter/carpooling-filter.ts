@@ -14,8 +14,6 @@ search = output<any>();
 
   applyFilters(): void {
     const filterData = {
-      villeDepart: 'Lille',
-      villeArrivee: 'Paris'
     };
     this.search.emit(filterData);
   }
