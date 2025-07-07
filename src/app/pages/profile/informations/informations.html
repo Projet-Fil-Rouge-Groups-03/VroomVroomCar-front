@@ -1,1 +1,32 @@
-<p>informations works!</p>
+<div>
+    <h3>Informations Personnelles</h3>
+    <div class="w-1/3 border border-black">
+        <div class="grid grid-cols-2 gap-4 ">
+            <div>
+                <label>Nom</label>
+                <p class="border border-green">{{user?.nom}}</p>
+                <label>Prenom</label>
+                <p class="border border-green">{{user?.prenom}}</p>
+                <label>Mail</label>
+                <p class="border border-green">{{user?.mail}}</p>
+            </div>
+            <div>
+                <h3>Adresse</h3>
+                <label>Libelle</label>
+                <p class="border border-green">{{user?.libelle}}</p>
+                <label>CP</label>
+                <p class="border border-green">{{user?.codePostal}}</p>
+                <label>Ville</label>
+                <p class="border border-green">{{user?.ville}}</p>
+            </div>
+        </div>
+        <div>
+            <h3>Véhicule</h3>
+            <label>{{userCar?.marque}}</label>
+            <label>{{userCar?.modele}}</label>
+            <label>{{userCar?.motorisation}}</label>
+            <label>{{userCar?.nbDePlaces}}</label>
+            <label>{{userCar?.infosSupp}}</label>
+        </div>
+    </div>
+</div>
