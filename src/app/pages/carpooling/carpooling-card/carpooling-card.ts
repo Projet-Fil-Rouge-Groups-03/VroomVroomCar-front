@@ -10,18 +10,11 @@ import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpo
 export class CarpoolingCard {
   @ViewChild('carpoolingDetailsModal') cardModal!: CarpoolingDetailsModal;
 
-  trajetId: number = 123;
-  trajetDepart: string = 'Bordeaux';
-  trajetArrivee: string = 'Paris';
 
   openCardModal() {
     if (this.cardModal) {
       this.cardModal.openModal();
     }
-  }
-
-  onModalClosed() {
-    console.log("La modale de la carte a été fermée.");
   }
 
 }
