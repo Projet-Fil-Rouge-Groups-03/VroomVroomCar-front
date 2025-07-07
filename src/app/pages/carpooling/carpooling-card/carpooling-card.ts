@@ -1,5 +1,8 @@
-import { Component, ElementRef, input, ViewChild } from '@angular/core';
+import { Component, OnInit, input, ViewChild } from '@angular/core';
 import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpooling-details-modal';
+import { TripService } from '../../../core/services/trip';
+import { Router } from '@angular/router';
+import { Trip } from '../../../core/models/trip.model';
 
 @Component({
   selector: 'app-carpooling-card',
@@ -8,6 +11,13 @@ import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpo
   styleUrl: './carpooling-card.css'
 })
 export class CarpoolingCard {
+
+  trip = input<Trip | undefined>();
+
+  constructor(
+    private tripService: TripService,
+    private router: Router
+  ) {}
 
   // Bloc Aller
   startTime = input<string>('9:00');
