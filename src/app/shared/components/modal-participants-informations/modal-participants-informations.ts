@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-modal-participants-informations',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './modal-participants-informations.css'
 })
 export class ModalParticipantsInformations {
-
+  participants = input<string>('Didier Mazier');
 }

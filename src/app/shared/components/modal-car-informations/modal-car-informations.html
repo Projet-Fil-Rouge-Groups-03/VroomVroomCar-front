@@ -1,1 +1,19 @@
-<p>modal-car-informations works!</p>
+<div class="relative border-2 border-[var(--color-light-orange)] rounded-md p-4">
+  <span class="absolute -top-3 left-3 bg-background px-2"> Récap. du véhicule :</span>
+
+  <div class="flex gap-4 mt-2">
+    <div class="space-y-1.5">
+        <div class="flex place-content-between">
+            <div class="flex space-x-1">
+                <p>{{marque()}}</p>
+                <p>{{modele()}}</p>
+            </div>
+            <p>{{motorisation()}}</p>
+        </div>
+        <p>{{nbDePlaces()}}</p>
+        <p>{{categorie()}}</p>
+        <p>{{pollution()}}</p>
+    </div>
+    <img src="/assets/images/Car.svg" alt="Voiture" class="w-auto h-32 object-cover" />
+    </div>
+</div>

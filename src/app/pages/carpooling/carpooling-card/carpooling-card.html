@@ -1,5 +1,6 @@
 <div
   class="bg-white min-h-[165px] md:min-h-[150px] rounded-md shadow-md/20 flex flex-col cursor-pointer hover:bg-gray-50"
+  (click)="openCardModal()"
 >
   <div class="flex gap-2 p-2 items-start flex-1 relative">
     <div class="flex gap-2 flex-1 justify-between">
@@ -59,3 +60,9 @@
     <p class="hidden md:block">2 pl. restantes</p>
   </div>
 </div>
+
+<app-carpooling-details-modal
+  #carpoolingDetailsModal
+  [organizer]="'Didier Mazier'"
+  (closed)="onModalClosed()"
+></app-carpooling-details-modal>
