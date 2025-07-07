@@ -32,6 +32,7 @@ export class CarpoolingCard {
   carService = inject(CarService);
   car = signal<Car | null>(null);
 
+  // POLLUTION, PAS CO2
   CO2 = computed(() => {
     const carData = this.car();
     return carData ? `${carData.co2ParKm}` : '...';
