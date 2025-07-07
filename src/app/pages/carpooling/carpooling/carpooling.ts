@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CarpoolingList } from '../carpooling-list/carpooling-list';
 import { AdCorner } from '../ad-corner/ad-corner';
 import { CarpoolingFilter } from '../carpooling-filter/carpooling-filter';
 import { CommonModule } from '@angular/common';
+import { Trip } from '../../../core/models/trip.model';
+import { TripService } from '../../../core/services/trip';
 
 @Component({
   selector: 'app-carpooling',
@@ -14,6 +16,23 @@ import { CommonModule } from '@angular/common';
   },
 })
 export class Carpooling {
+
+  trips: Trip[] = [];
+
+  constructor(
+    private tripService: TripService,
+  ) {}
+
+  ngOnInit(): void {
+    this.loadTrips();
+  }
+
+  // Charger toutes les trips
+  loadTrips(): void {
+    this.tripService.getAllTrips().subscribe(trips => this.trips = trips);
+  }
+
+  // --- FILTER ---
   isFilterMenuVisible = false;
 
   toggleFilterMenu(): void {
