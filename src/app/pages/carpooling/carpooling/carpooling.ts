@@ -1,16 +1,32 @@
 import { Component } from '@angular/core';
 import { CarpoolingList } from '../carpooling-list/carpooling-list';
 import { AdCorner } from '../ad-corner/ad-corner';
+import { CarpoolingFilter } from '../carpooling-filter/carpooling-filter';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-carpooling',
-  imports: [CarpoolingList, AdCorner],
+  imports: [CommonModule, CarpoolingList, AdCorner, CarpoolingFilter],
   templateUrl: './carpooling.html',
   styleUrl: './carpooling.css',
-    host: {
-    class: 'flex-1 flex flex-col lg:flex-row lg:pt-8',
+  host: {
+    class: 'flex-1 flex flex-col lg:flex-row mx-auto w-[95%] lg:pt-8',
   },
 })
 export class Carpooling {
+  isFilterMenuVisible = false;
 
+  toggleFilterMenu(): void {
+    this.isFilterMenuVisible = !this.isFilterMenuVisible;
+  }
+
+  handleSearch(filters: any): void {
+    console.log(
+      'Recherche lancée depuis le parent avec les filtres :',
+      filters
+    );
+    // Logique pour appeler le service viendra ici...
+
+    this.isFilterMenuVisible = false;
+  }
 }
