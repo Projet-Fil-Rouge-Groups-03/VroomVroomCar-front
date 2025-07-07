@@ -1,1 +1,43 @@
-<p>carpooling-filter works!</p>
+<form (ngSubmit)="applyFilters()"
+      [ngClass]="{
+        'hidden': !isVisible(), 
+        'flex': isVisible()
+      }"
+      class="w-[12.5rem] bg-green py-2 rounded-sm flex-col items-center gap-2 mx-2 
+             absolute top-52 left-0 z-20 shadow-lg/50
+             lg:shadow-none lg:flex lg:relative lg:top-auto lg:left-auto lg:z-auto">
+  <div class="bg-white rounded-sm max-w-[90%] p-2">
+    <div class="flex gap-2 items-center mb-3">
+      <label for="villeDepart" class="text-sm w-8 flex-shrink-0">De :</label>
+      <input type="text" id="villeDepart" placeholder="Ville de départ" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
+    </div>
+    <div class="flex gap-2 items-center mb-3">
+      <label for="villeArrivee" class="text-sm w-8 flex-shrink-0">À :</label>
+      <input type="text" id="villeArrivee" placeholder="Ville d'arrivée" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
+    </div>
+    <div class="flex gap-2 items-center mb-3">
+      <label for="dateDepart" class="text-sm w-8 flex-shrink-0">Le :</label>
+      <input type="date" id="dateDepart" class="input-small text-sm flex-1 min-w-0" />
+    </div>
+    <div class="flex gap-2 items-center mb-4">
+      <label for="heureDepart" class="text-sm w-22 flex-shrink-0">À partir de :</label>
+      <select id="heureDepart" class="input-small px-0.5 flex-1 min-w-0 text-sm">
+          <option>00:00</option>
+      </select>
+    </div>
+    
+    <div class="flex gap-2 items-center mb-2">
+        <input name="vehicule" type="radio" id="vehicule1" class="radio-custom"/>
+        <label for="vehicule1" class="text-sm leading-tight">Vehicule de Service partagé</label>
+    </div>
+    <div class="flex gap-2 items-center mb-2">
+        <input name="vehicule" type="radio" id="vehicule2" class="radio-custom" />
+        <label for="vehicule2" class="text-sm">Covoiturage</label>
+    </div>
+    <div class="flex gap-2 items-center">
+        <input name="vehicule" type="radio" id="vehicule3" class="radio-custom" />
+        <label for="vehicule3" class="text-sm">Tout</label>
+    </div>
+  </div>
+   <button type="submit" class="btn-primary my-2">Filtrer</button>
+</form>
