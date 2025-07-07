@@ -11,28 +11,29 @@ class="relative modal-details"
         </svg>
     </button>
   <h1 class="text-center">Détails de la réservation</h1>
-  <div class="flex space-x-8 p-4">
-    <!--Côté gauche de la modale-->
-    <div class="space-y-2">
-        <div>
-            <p>Organisateur</p>
-            <div class="flex items-center gap-2 p-1.5 pr-16 border-2 border-[var(--color-green)] rounded-sm">
-                <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
-                <p>{{ organizer() }}</p>
+  <div>
+    <div class="flex flex-col-reverse md:flex-row space-x-8 p-4">
+        <!--Côté gauche de la modale-->
+        <div class="space-y-2 mt-4">
+            <div>
+                <p>Organisateur</p>
+                <div class="flex items-center gap-2 p-1.5 pr-16 border-2 border-[var(--color-green)] rounded-sm">
+                    <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
+                    <p>{{ organizer() }}</p>
+                </div>
+            </div>
+            <div>
+                <app-modal-participants-informations></app-modal-participants-informations>
             </div>
         </div>
-        <div>
-            <app-modal-participants-informations></app-modal-participants-informations>
+        <!--Côté droite de la modale-->
+        <div class="pt-4">
+            <app-modal-car-informations></app-modal-car-informations>
         </div>
     </div>
-    <!--Côté droite de la modale-->
-    <div class="pt-4 flex flex-col justify-between">
-        <app-modal-car-informations></app-modal-car-informations>
-        <div class="space-x-8">
-            <button class="btn-modal" (click)="closeModal()">Annuler</button>
-            <button class="btn-modal">Réserver</button>
-        </div>
-        
+    <div class="flex justify-end pr-4 space-x-8">
+        <button class="btn-modal" (click)="closeModal()">Annuler</button>
+        <button class="btn-modal">Réserver</button>
     </div>
   </div>
 
