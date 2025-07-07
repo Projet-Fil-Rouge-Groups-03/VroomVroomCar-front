@@ -24,3 +24,8 @@ export interface UserRequest {
   ville: string;
   status?: UserStatus;
 }
+
+export interface UserSummary {
+  nom: string;
+  prenom: string;
+}

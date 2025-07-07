@@ -1,3 +1,6 @@
+import { Car } from "./car.model";
+import { UserSummary } from "./user.model";
+
 export interface Trip {
   id: number;
   dateDebut: string;
@@ -11,6 +14,8 @@ export interface Trip {
   nbPlacesRestantes: number;
   organisateurId: number;
   carId: number;
+  car?: Car;
+  organisateur?: UserSummary;
 }
 
 export interface RequestTrip {
