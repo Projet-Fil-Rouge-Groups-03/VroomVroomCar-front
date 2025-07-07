@@ -8,27 +8,27 @@
         <div class="flex flex-col justify-between gap-1 md:gap-0 md:flex-row items-start flex-1">
             <!-- Bloc Aller -->
             <div class="flex flex-row md:flex-col gap-x-2 md:w-2/5">
-              <p class="font-medium text-xl">9:00</p>
+              <p class="font-medium text-xl">{{startTime()}}</p>
               <div>
-                <p class="text-lg">Bordeaux</p>
-                <p class="font-light">Gare Saint-Jean</p>
+                <p class="text-lg">{{startCity()}}</p>
+                <p class="font-light">{{startPlace()}}</p>
               </div> 
             </div>
 
             <!-- Bloc temps -->
             <div class="self-start flex items-center justify-center md:flex-col">
               <img src="assets/icons/fleche grd.svg" class="hidden md:block -mb-4" />
-              <p class="font-light text-xs">7h</p>
+              <p class="font-light text-xs">{{hours()}}</p>
               <img src="assets/icons/fleche.svg" class="md:hidden" />
-              <p class="font-light text-xs">450km</p>
+              <p class="font-light text-xs">{{distances()}}</p>
             </div>
 
             <!-- Bloc Retour -->
             <div class="flex flex-row md:flex-col gap-x-2 md:w-2/5">
-              <p class="font-medium text-xl">16:00</p>
+              <p class="font-medium text-xl">{{arrivalTime()}}</p>
               <div>
-                <p class="text-lg">Bordeaux</p>
-                <p class="font-light">VroomVroomCar Bordeaux</p>
+                <p class="text-lg">{{arrivalCity()}}</p>
+                <p class="font-light">{{arrivalPlace()}}</p>
               </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
           src="assets/icons/add-circle-svgrepo-com 1.svg"
           class="w-8 md:w-10"
         />
-        <p class="text-light text-sm text-gray-400 self-end">9.02g CO²</p>
+        <p class="text-light text-sm text-gray-400 self-end">{{CO2()}}g CO²</p>
       </div>
     </div>
 
@@ -54,14 +54,15 @@
     <div class="flex items-center gap-2">
       <img src="assets/images/covoit.svg" class="h-10" />
       <img src="assets/icons/avatar.svg" alt="avatar" class="h-8 pl-6" />
-      <p>Didier Mazier</p>
+      <p>{{organizer()}}</p>
     </div>
-    <p class="md:hidden">2 pl.</p>
-    <p class="hidden md:block">2 pl. restantes</p>
+    <p class="md:hidden">{{places()}} pl.</p>
+    <p class="hidden md:block">{{places()}} pl. restantes</p>
   </div>
 </div>
 
+<!-- MODAL -->
 <app-carpooling-details-modal
   #carpoolingDetailsModal
-  [organizer]="'Didier Mazier'"
+  [organizer]= organizer()
 ></app-carpooling-details-modal>

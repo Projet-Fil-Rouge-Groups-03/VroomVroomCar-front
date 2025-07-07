@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CarpoolingCard } from "../carpooling-card/carpooling-card";
+import { Trip } from '../../../core/models/trip.model';
 
 @Component({
   selector: 'app-carpooling-list',
@@ -11,5 +12,5 @@ import { CarpoolingCard } from "../carpooling-card/carpooling-card";
   },
 })
 export class CarpoolingList {
-
+  trips = input<Trip[] | undefined>();
 }
