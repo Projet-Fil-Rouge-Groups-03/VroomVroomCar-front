@@ -5,7 +5,10 @@ import { CarpoolingList } from '../carpooling-list/carpooling-list';
   selector: 'app-carpooling',
   imports: [CarpoolingList],
   templateUrl: './carpooling.html',
-  styleUrl: './carpooling.css'
+  styleUrl: './carpooling.css',
+    host: {
+    class: 'flex-1 flex flex-col',
+  },
 })
 export class Carpooling {
 

@@ -6,8 +6,8 @@ import { CarpoolingCard } from "../carpooling-card/carpooling-card";
   imports: [CarpoolingCard],
   templateUrl: './carpooling-list.html',
   styleUrl: './carpooling-list.css',
-    host: {
-    class: "",
+  host: {
+    class: 'flex-1 flex flex-col',
   },
 })
 export class CarpoolingList {
