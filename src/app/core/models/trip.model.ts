@@ -19,6 +19,7 @@ export interface Trip {
   organisateur?: UserSummary;
   timeTravel?: string;
   distanceInKm?: number;
+  pollution?: number;
 }
 
 export interface RequestTrip {

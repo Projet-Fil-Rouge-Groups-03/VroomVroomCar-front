@@ -38,10 +38,7 @@ export class CarpoolingCard {
   carService = inject(CarService);
   car = signal<Car | null>(null);
 
-  pollution = computed(() => {
-    const carData = this.car();
-    return carData ? `${carData.pollution}` : '...';
-  });
+  pollution = computed(() => `${this.trip()?.pollution ?? 0}`);
 
   // Bloc du dessous
   organizerLastname = computed(() => this.trip()?.organisateur?.nom ?? '??');
