@@ -1,44 +1,64 @@
 <div>
     <h3>Informations Personnelles</h3>
-    <div class="border border-black">
+    <div class="border border-black rounded-md">
         <div class="grid grid-cols-2 gap-4 ">
-            <div>
-                <label>Nom</label>
-                <p class="border border-green">{{user()?.nom}}</p>
-                <label>Prenom</label>
-                <p class="border border-green">{{user()?.prenom}}</p>
-                <label>Mail</label>
-                <p class="border border-green">{{user()?.mail}}</p>
+            <div class="grid cols-2 gap-4">
+                <div>
+                    <img src="assets/icons/avatar.svg" alt="Avatar"></div>
+                <div>
+                    <label>Nom</label>
+                    <p class="border border-green-rounded">{{user()?.nom}}</p>
+                    <label>Prenom</label>
+                    <p class="border border-green-rounded">{{user()?.prenom}}</p>
+                </div>
+                <div class="col-span-2">
+                    <label>Mail</label>
+                    <p class="border border-green-rounded">{{user()?.mail}}</p>
+                </div>
             </div>
-            <div>
-                <h3>Adresse</h3>
-                <label>Libelle</label>
-                <p class="border border-green">{{user()?.libelle}}</p>
-                <label>CP</label>
-                <p class="border border-green">{{user()?.codePostal}}</p>
-                <label>Ville</label>
-                <p class="border border-green">{{user()?.ville}}</p>
+            <div class="grid cols-2 gap-4">
+                <div class="col-span-2">
+                    <h2>Adresse</h2><br>
+                    <label>Libelle</label>
+                    <p class="border border-green-rounded">{{user()?.libelle}}</p>
+                </div>
+                <div>
+                    <label>Ville</label>
+                    <p class="border border-green-rounded">{{user()?.ville}}</p>
+                </div>
+                                <div>
+                    <label>Code Postal</label>
+                    <p class="border border-green-rounded">{{user()?.codePostal}}</p>
+                </div>
             </div>
         </div>
-        <div class="relative border-2 border-orange-500 flex rounded-md p-4 mt-8">
-            <div class="absolute -top-4 left-4 bg-white px-2">Véhicule</div>
-            <div class="w-1/4 flex flex-col">
-                <label>Marque</label>
-                <label class="border border-green">{{userCar?.marque}}</label>
-                <label>Motorisation</label>
-                <label class="border border-green">{{userCar?.motorisation}}</label>
+        <div class="relative border-2 border-light-orange rounded-md p-4 mt-8 grid grid-cols-4">
+            <div class="absolute -top-3 left-4 bg-white px-2">Véhicule</div>
+            <div>
+                <div>
+                    <label>Marque</label>
+                    <div class="border border-green-rounded">{{userCar?.marque}}</div>
+                </div>
+                <div>
+                    <label>Motorisation</label>
+                    <div class="border border-green-rounded">{{userCar?.motorisation}}</div>
+                </div>
             </div>
-            <div class="w-1/4 flex flex-col">
-                <label>Modèle</label>
-                <label class="border border-green">{{userCar?.modele}}</label>
-                <label>Places Restantes</label>
-                <label class="border border-green">{{userCar?.nbDePlaces}}</label>
+            <div>
+                <div>
+                    <label>Modèle</label>
+                    <div class="border border-green-rounded">{{userCar?.modele}}</div>
+                </div>
+                <div>
+                    <label>Places Restantes</label>
+                    <div class="border border-green-rounded">{{userCar?.nbDePlaces}}</div>
+                </div>
             </div>
-            <div class="w-1/2 flex flex-col">
+            <div class="col-span-2 flex flex-col h-full">
                 <label>Infos supp.</label>
-                <div class="flex-1 border border-green">{{userCar?.infosSupp}}</div>
+                <div class="flex-1 border border-green-rounded">{{userCar?.infosSupp}}</div>
             </div>
         </div>
-        <button class="btn-modal">Modifier</button>
+        <button class="btn-modal ml-auto block">Modifier</button>
     </div>
 </div>
