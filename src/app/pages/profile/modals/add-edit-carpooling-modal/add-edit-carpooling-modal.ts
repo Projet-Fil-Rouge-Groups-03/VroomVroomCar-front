@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   input,
@@ -36,7 +37,8 @@ export class AddEditCarpoolingModal implements OnInit {
   currentTripId: number | null = null;
   organisateurId: number | null = null; 
 
-  constructor(private fb: FormBuilder, private tripService: TripService) {}
+  constructor(private fb: FormBuilder, private tripService: TripService,
+    private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.genererHeures();
@@ -61,63 +63,48 @@ export class AddEditCarpoolingModal implements OnInit {
     });
   }
 
-    openModal(tripData?: Partial<Trip>) {
-    // --- 1. Nettoyage initial ---
+ openModal(tripData?: Partial<Trip>) {
     this.carpoolingForm.reset();
     
-    // On initialise un objet qui contiendra les valeurs pour le formulaire.
-    // On le type en `any` pour pouvoir y ajouter `vehicleChoice` facilement.
-    let dataForForm: any;
+    let dataForForm: any = {};
 
-    // --- 2. Détermination du mode : Ajout ou Édition ---
     if (tripData && tripData.id) {
       // === MODE ÉDITION ===
       this.isEditMode = true;
       this.currentTripId = tripData.id;
       this.organisateurId = tripData.organisateurId ?? null;
 
-      // On copie les données du trajet dans notre objet de préparation
       dataForForm = { ...tripData };
-
-      // On ajoute la logique pour déterminer le 'vehicleChoice'
       if (tripData.car) {
-        if (tripData.car.type === TypeVehicule.VOITURE_SERVICE) {
-          dataForForm.vehicleChoice = 'service';
-        } else {
-          dataForForm.vehicleChoice = 'personal';
-        }
+        dataForForm.vehicleChoice = (tripData.car.type === TypeVehicule.VOITURE_SERVICE) ? 'service' : 'personal';
+      } else {
+        dataForForm.vehicleChoice = 'personal';
       }
+
+      this.carpoolingForm.patchValue(dataForForm);
       
-      console.log("Ouverture en mode Édition. Données pour le formulaire :", dataForForm);
+      setTimeout(() => {
+        this.carpoolingForm.get('carId')?.setValue(tripData.carId ? Number(tripData.carId) : null);
+        this.cdr.detectChanges(); 
+        
+        console.log("Valeur du carId patchée dans le setTimeout:", this.carpoolingForm.get('carId')?.value);
+      }, 0);
 
     } else {
       // === MODE AJOUT ===
       this.isEditMode = false;
       this.currentTripId = null;
-      // On stocke l'organisateurId si présent
       this.organisateurId = tripData?.organisateurId ?? null;
 
-      // On prépare les valeurs par défaut pour un nouveau trajet
       dataForForm = {
         heureDepart: '09:00',
         vehicleChoice: 'personal',
-        ...tripData // On ajoute les autres données par défaut (comme organisateurId)
+        ...tripData
       };
       
-      console.log("Ouverture en mode Ajout. Données pour le formulaire :", dataForForm);
+      this.carpoolingForm.patchValue(dataForForm);
     }
-
-    // --- 3. Application des données et ouverture ---
-    // On applique les données préparées au formulaire, UNE SEULE FOIS.
-    this.carpoolingForm.patchValue(dataForForm);
-
-    // Si on a choisi un véhicule de service, on s'assure que le select est bien activé
-    // (si tu utilises le design complexe avec la checkbox et le select désactivé)
-    // if (dataForForm.vehicleChoice === 'service') {
-    //   this.carpoolingForm.get('vehiculeServiceSelect')?.enable();
-    // }
-
-    // On ouvre la modale
+    
     this.myDialog.nativeElement.showModal();
   }
 
@@ -135,7 +122,7 @@ save() {
     }
 
     const formValues = this.carpoolingForm.value;
-    const organisateurIdFinal = this.isEditMode ? formValues.organisateurId : this.organisateurId;
+    const organisateurIdFinal = this.organisateurId;
 
     if (!formValues.carId || !organisateurIdFinal) {
         console.error("Erreur critique: carId ou organisateurId est manquant.", { carId: formValues.carId, organisateurId: organisateurIdFinal });
