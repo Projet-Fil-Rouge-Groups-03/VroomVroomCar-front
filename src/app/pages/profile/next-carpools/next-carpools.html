@@ -1,24 +1,88 @@
-<p>next-carpools works!</p>
+<div class="pb-1 flex justify-between items-center">
+  <h2>Mes prochains trajets</h2>
+  <img
+    src="assets/icons/Add.svg"
+    alt="Ajouter un covoiturage"
+    class="cursor-pointer"
+    (click)="openModalAdd()"
+    title="Organiser un nouveau covoiturage"
+  />
+</div>
 
-<img
-  src="assets/icons/Add.svg"
-  alt="Logo VroomVroomCar"
-  class="cursor-pointer"
-  (click)="openModalAdd()"
-/>
-<button
-  type="button"
-  title="Modifier le trajet"
-  class="cursor-pointer"
-  >
-  ✏️
-</button>
-<button
-  type="button"
+<!-- Tableau affichant les trajets -->
+<table class="table-vroom">
+  <thead>
+    <tr>
+      <th>Date et heure de départ</th>
+      <th>Départ</th>
+      <th>Arrivée</th>
+      <th>Type</th>
+      <th>Places</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  @for (item of displayItems; track item ? item.id + item.type : $index) {
+    @if (item) {
+      <!-- On peut ajouter une classe pour différencier visuellement -->
+      <tr class="cursor-pointer" [class.reservation-row]="item.type === 'RESERVATION'" (click)="openModalDetails(item)">
+        <td>
+          <div style="display: inline-block; width: 50%; text-align: left">
+          {{ item.dateDebut | date : "dd/MM/yyyy" }}
+        </div>
+        <div style="display: inline-block; width: 50%; text-align: right">
+          {{ item.heureDepart }}
+        </div>
+        </td>
+        <td>{{ item.villeDepart }}</td>
+        <td>{{ item.villeArrivee }}</td>
+        
+        <!-- Affichage du Type -->
+        <td>
+          @if(item.type === 'TRIP') {
+            <span>{{ item.car?.type === 'VOITURE_SERVICE' ? 'Covoit service' : 'Covoit perso' }}</span>
+          } @else {
+            <span>Réservation service</span>
+          }
+        </td>
 
-  class="cursor-pointer text-xl"
-  title="Supprimer le tableau"
->
-  🗑️
-</button>
-<app-add-edit-carpooling-modal #addEditModal (saved)="onCarpoolSaved($event)"></app-add-edit-carpooling-modal>
+        <!-- Affichage des Places -->
+        <td>
+          @if(item.type === 'TRIP') {
+            <span>{{ item.nbPlacesRestantes }}/{{ item.car?.nbDePlaces || '?' }}</span>
+          } @else {
+            <span>-</span>
+          }
+        </td>
+
+        <!-- Affichage des Actions -->
+        <td>
+          @if (item.type === 'TRIP') {
+            <button (click)="$event.stopPropagation(); openModalEdit(item)">✏️</button>
+          }
+          <button (click)="$event.stopPropagation(); deleteItem(item)">🗑️</button>
+        </td>
+      </tr>
+    } @else {
+    <!-- Cas 2 : C'est une ligne vide (l'objet est null) -->
+    <tr class="">
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+
+@if (displayItems.length > ROWS_TO_DISPLAY) {
+<button class="btn-primary mx-auto my-4">Voir plus</button>
+}
+
+<!-- Modale d'ajout / d'edition -->
+<app-add-edit-carpooling-modal
+  #addEditModal
+  (saved)="onCarpoolSaved($event)"
+></app-add-edit-carpooling-modal>
