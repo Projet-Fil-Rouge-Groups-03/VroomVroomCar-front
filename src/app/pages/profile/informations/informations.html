@@ -1,32 +1,44 @@
 <div>
     <h3>Informations Personnelles</h3>
-    <div class="w-1/3 border border-black">
+    <div class="border border-black">
         <div class="grid grid-cols-2 gap-4 ">
             <div>
                 <label>Nom</label>
-                <p class="border border-green">{{user?.nom}}</p>
+                <p class="border border-green">{{user()?.nom}}</p>
                 <label>Prenom</label>
-                <p class="border border-green">{{user?.prenom}}</p>
+                <p class="border border-green">{{user()?.prenom}}</p>
                 <label>Mail</label>
-                <p class="border border-green">{{user?.mail}}</p>
+                <p class="border border-green">{{user()?.mail}}</p>
             </div>
             <div>
                 <h3>Adresse</h3>
                 <label>Libelle</label>
-                <p class="border border-green">{{user?.libelle}}</p>
+                <p class="border border-green">{{user()?.libelle}}</p>
                 <label>CP</label>
-                <p class="border border-green">{{user?.codePostal}}</p>
+                <p class="border border-green">{{user()?.codePostal}}</p>
                 <label>Ville</label>
-                <p class="border border-green">{{user?.ville}}</p>
+                <p class="border border-green">{{user()?.ville}}</p>
             </div>
         </div>
-        <div>
-            <h3>Véhicule</h3>
-            <label>{{userCar?.marque}}</label>
-            <label>{{userCar?.modele}}</label>
-            <label>{{userCar?.motorisation}}</label>
-            <label>{{userCar?.nbDePlaces}}</label>
-            <label>{{userCar?.infosSupp}}</label>
+        <div class="relative border-2 border-orange-500 flex rounded-md p-4 mt-8">
+            <div class="absolute -top-4 left-4 bg-white px-2">Véhicule</div>
+            <div class="w-1/4 flex flex-col">
+                <label>Marque</label>
+                <label class="border border-green">{{userCar?.marque}}</label>
+                <label>Motorisation</label>
+                <label class="border border-green">{{userCar?.motorisation}}</label>
+            </div>
+            <div class="w-1/4 flex flex-col">
+                <label>Modèle</label>
+                <label class="border border-green">{{userCar?.modele}}</label>
+                <label>Places Restantes</label>
+                <label class="border border-green">{{userCar?.nbDePlaces}}</label>
+            </div>
+            <div class="w-1/2 flex flex-col">
+                <label>Infos supp.</label>
+                <div class="flex-1 border border-green">{{userCar?.infosSupp}}</div>
+            </div>
         </div>
+        <button class="btn-modal">Modifier</button>
     </div>
 </div>
