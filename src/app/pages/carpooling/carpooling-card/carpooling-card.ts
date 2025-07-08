@@ -1,4 +1,5 @@
 import { Component, OnInit, input, ViewChild, computed, inject, signal, effect } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpooling-details-modal';
 import { Trip } from '../../../core/models/trip.model';
 import { CarService } from '../../../core/services/car';
@@ -6,7 +7,7 @@ import { Car } from '../../../core/models/car.model';
 
 @Component({
   selector: 'app-carpooling-card',
-  imports: [CarpoolingDetailsModal],
+  imports: [CarpoolingDetailsModal, DatePipe],
   templateUrl: './carpooling-card.html',
   styleUrl: './carpooling-card.css'
 })
@@ -15,7 +16,12 @@ export class CarpoolingCard {
   trip = input<Trip | undefined>();
 
   // Bloc Aller
-  startTime = computed(() => this.trip()?.heureDepart ?? '00:00');
+  startTime = computed(() => {
+    const timeString = this.trip()?.heureDepart;
+    // Convertit "HH:MM:SS" en objet Date.
+    // On utilise une date arbitraire (2000-01-01) car seule l'heure nous intéresse.
+    return timeString ? new Date(`2000-01-01T${timeString}`) : new Date('2000-01-01T00:00:00');
+  });
   startCity = computed(() => this.trip()?.villeDepart ?? 'Ville inconnue');
   startPlace = computed(() => this.trip()?.lieuDepart ?? 'Lieu inconnu');
 
@@ -30,7 +36,12 @@ export class CarpoolingCard {
   });
 
   // Bloc Retour
-  arrivalTime = computed(() => this.trip()?.heureArrivee ?? '??');
+  arrivalTime = computed(() => {
+    const timeString = this.trip()?.heureArrivee;
+    // Convertit "HH:MM:SS" en objet Date.
+    // On utilise une date arbitraire (2000-01-01) car seule l'heure nous intéresse.
+    return timeString ? new Date(`2000-01-01T${timeString}`) : new Date('2000-01-01T00:00:00');
+  });
   arrivalCity = computed(() => this.trip()?.villeArrivee ?? 'Ville inconnue');
   arrivalPlace = computed(() => this.trip()?.lieuArrivee ?? 'Lieu inconnu');
 
@@ -38,10 +49,9 @@ export class CarpoolingCard {
   carService = inject(CarService);
   car = signal<Car | null>(null);
 
-  // POLLUTION, PAS CO2
-  CO2 = computed(() => {
+  pollution = computed(() => {
     const carData = this.car();
-    return carData ? `${carData.co2ParKm}` : '...';
+    return carData ? `${carData.pollution}` : '...';
   });
 
   // Bloc du dessous

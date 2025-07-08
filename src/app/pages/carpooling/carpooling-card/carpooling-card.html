@@ -8,7 +8,7 @@
         <div class="flex flex-col justify-between gap-1 md:gap-0 md:flex-row items-start flex-1">
             <!-- Bloc Aller -->
             <div class="flex flex-row md:flex-col gap-x-2 md:w-2/5">
-              <p class="font-medium text-xl">{{startTime()}}</p>
+              <p class="font-medium text-xl">{{startTime() | date:'HH:mm'}}</p>
               <div>
                 <p class="text-lg">{{startCity()}}</p>
                 <p class="font-light">{{startPlace()}}</p>
@@ -25,7 +25,7 @@
 
             <!-- Bloc Retour -->
             <div class="flex flex-row md:flex-col gap-x-2 md:w-2/5">
-              <p class="font-medium text-xl">{{arrivalTime()}}</p>
+              <p class="font-medium text-xl">{{arrivalTime() | date:'HH:mm'}}</p>
               <div>
                 <p class="text-lg">{{arrivalCity()}}</p>
                 <p class="font-light">{{arrivalPlace()}}</p>
@@ -39,7 +39,7 @@
           src="assets/icons/add-circle-svgrepo-com 1.svg"
           class="w-8 md:w-10"
         />
-        <p class="text-light text-sm text-gray-400 self-end">{{CO2()}}g CO²</p>
+        <p class="text-light text-sm text-gray-400 self-end">{{pollution()}}g CO²</p>
       </div>
     </div>
 
