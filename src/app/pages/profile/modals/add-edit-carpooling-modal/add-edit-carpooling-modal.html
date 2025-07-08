@@ -1,10 +1,8 @@
-<!-- La balise <dialog> est parfaite pour ça -->
 <dialog
   #carpoolingDetailsModal
   class="relative modal-details"
   (close)="closeModal()"
 >
-  <!-- L'événement close est émis quand on appuie sur Echap -->
 
   <form [formGroup]="carpoolingForm" (ngSubmit)="save()">
     <!-- Croix en haut à droite -->
@@ -102,28 +100,33 @@
         </select>
     </div>
 
-    <!-- Vehicules - soit l'un soit l'aure  -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="input-large flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="vehiculePerso"
-          formControlName="vehiculePerso"
-        />
-        <label for="vehiculePerso">Véhicule perso</label>
-      </div>
-      <div class="input-large flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="vehiculeService"
-          formControlName="vehiculeService"
-        />
-        <select id="vehiculeService" formControlName="vehiculeService">
-          <option class="overflow-hidden" [ngValue]="null" disabled>Véhicule de service</option>
-          <!-- À Remplir avec les véhicules de service -->
-        </select>
-      </div>
+    <!-- Option 1 : Véhicule perso -->
+    <label class="input-large">
+      <input type="radio" value="personal" formControlName="vehicleChoice">
+      Véhicule personnel
+    </label>
+
+    <!-- Option 2 : Véhicule de service -->
+    <label class="input-large">
+      <input type="radio" value="service" formControlName="vehicleChoice">
+      Véhicule de service
+    </label>
+  </div>
+
+  <!-- Le sélecteur pour les voitures de service n'est affiché QUE si le choix est "service" -->
+  @if (carpoolingForm.get('vehicleChoice')?.value === 'service') {
+    <div class="input-large w-full mt-3">
+      <select formControlName="carId" class="input-large w-full">
+        <option [ngValue]="null" disabled>Choisissez une réservation</option>
+        @for(reservation of userCompanyCarReservations(); track reservation.id) {
+          <option [value]="reservation.carId">
+             {{ reservation.car?.marque }} {{ reservation.car?.modele }} le {{ reservation.dateDebut }}
+          </option>
+        }
+      </select>
     </div>
+  }
 
     <!-- Boutons -->
     <div class="flex justify-center gap-4 mt-8">

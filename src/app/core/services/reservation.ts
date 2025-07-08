@@ -42,6 +42,11 @@ export class ReservationService {
     return this.http.get<Page<Reservation>>(`${this.apiUrl}/car/${carId}`, { params, withCredentials: true });
   }
 
+  // Get /user/{userId}
+  getReservationsByUserId(userId: number): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}`);
+  }
+
   // PUT /update/{id}
   updateReservation(id: number, request: ReservationRequest): Observable<Reservation> {
     return this.http.put<Reservation>(`${this.apiUrl}/update/${id}`, request, { withCredentials: true });

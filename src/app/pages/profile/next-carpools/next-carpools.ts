@@ -1,10 +1,18 @@
-import { Component, input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { AddEditCarpoolingModal } from '../modals/add-edit-carpooling-modal/add-edit-carpooling-modal';
 import { CommonModule } from '@angular/common';
 import { Trip } from '../../../core/models/trip.model';
 import { TripService } from '../../../core/services/trip';
 import { User } from '../../../core/models/user.model';
 import { Car } from '../../../core/models/car.model';
+import { CarpoolingDetailsModal } from '../../carpooling/modals/carpooling-details-modal/carpooling-details-modal';
+import { Reservation } from '../../../core/models/reservation.model';
 
 @Component({
   selector: 'app-next-carpools',
@@ -17,12 +25,13 @@ import { Car } from '../../../core/models/car.model';
 })
 export class NextCarpools implements OnChanges {
   @ViewChild('addEditModal') addEditModal!: AddEditCarpoolingModal;
+  @ViewChild('carDetailsModal') carDetailsModal!: CarpoolingDetailsModal;
 
-  // --- LES PROPRIÉTÉS REÇUES DU PARENT 
-  currentUser = input<User | null>(null);
-  
-  // Reçoit la voiture par défaut de l'utilisateur.
-  userCar = input<Car | null>(null);
+  // --- LES PROPRIÉTÉS REÇUES DU PARENT
+  currentUser = input<User | null>();
+  userPersonalCars = input<Car[]>([]);
+  userCompanyCarReservations = input<Reservation[]>([]);
+
   // --------------------------------------------------------------------------
 
   trips: Trip[] = [];
@@ -34,7 +43,7 @@ export class NextCarpools implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentUser'] && this.currentUser()) {
       const user = this.currentUser();
-      if(user) {
+      if (user) {
         this.loadUpcomingTrips(user.id);
       }
     } else if (!this.currentUser()) {
@@ -51,10 +60,10 @@ export class NextCarpools implements OnChanges {
         this.prepareDisplayData();
       },
       error: (err) => {
-        console.error("Erreur lors du chargement des trajets :", err);
+        console.error('Erreur lors du chargement des trajets :', err);
         this.trips = [];
         this.prepareDisplayData();
-      }
+      },
     });
   }
 
@@ -65,7 +74,9 @@ export class NextCarpools implements OnChanges {
   prepareDisplayData(): void {
     const realData = this.trips.slice(0, this.ROWS_TO_DISPLAY);
     const placeholdersNeeded = this.ROWS_TO_DISPLAY - realData.length;
-    const placeholders = Array(placeholdersNeeded > 0 ? placeholdersNeeded : 0).fill(null);
+    const placeholders = Array(
+      placeholdersNeeded > 0 ? placeholdersNeeded : 0
+    ).fill(null);
     this.displayTrips = [...realData, ...placeholders];
   }
 
@@ -75,16 +86,13 @@ export class NextCarpools implements OnChanges {
    */
   openModalAdd() {
     const user = this.currentUser();
-    if (!user) {
-      console.error("Impossible d'ajouter un trajet, l'utilisateur n'est pas disponible.");
-      return;
-    }
+    if (!user) { return; }
 
-    const defaultTripData = {
-      organisateurId: user.id,
-      car: this.userCar()
-    };
-    
+    const defaultTripData = { organisateurId: user.id };
+
+    this.addEditModal.userPersonalCars = this.userPersonalCars;
+    this.addEditModal.userCompanyCarReservations = this.userCompanyCarReservations;
+
     this.addEditModal.openModal(defaultTripData);
   }
 
@@ -92,10 +100,48 @@ export class NextCarpools implements OnChanges {
    * Ouvre la modale en mode ÉDITION en passant le trajet complet.
    */
   openModalEdit(tripData: Trip) {
+        this.addEditModal.userPersonalCars = this.userPersonalCars;
+    this.addEditModal.userCompanyCarReservations = this.userCompanyCarReservations;
+
     this.addEditModal.openModal(tripData);
   }
 
-  onCarpoolSaved(event: any) {
-    console.log('Covoiturage sauvegardé !', event);
+  onCarpoolSaved(savedTrip: Trip) {
+    console.log(
+      'Trajet sauvegardé, rafraîchissement de la liste...',
+      savedTrip
+    );
+    const user = this.currentUser();
+    if (user) {
+      this.loadUpcomingTrips(user.id);
+    }
+  }
+
+  /**
+   * Gère la suppression d'un trajet.
+   * Ouvre une modale de confirmation avant d'appeler le service.
+   */
+  deleteTrip(tripId: number): void {
+    // modale de confirmation à mettre ici quand elle sera terminée
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce trajet ?')) {
+      const user = this.currentUser();
+      this.tripService.deleteTrip(tripId).subscribe({
+        next: () => {
+          console.log(`Trajet ${tripId} supprimé.`);
+          if (user) {
+            this.loadUpcomingTrips(user.id);
+          }
+        },
+        error: (err) =>
+          console.error(
+            `Erreur lors de la suppression du trajet ${tripId}`,
+            err
+          ),
+      });
+    }
+  }
+
+  openModalDetails(tripData: Trip) {
+    // this.carDetailsModal.openModal(tripData); //Expect pas d'aguments => à voir...
   }
 }

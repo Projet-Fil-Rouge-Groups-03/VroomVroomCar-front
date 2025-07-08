@@ -1,14 +1,15 @@
-<div class="pb-1 flex justify-between">
+<div class="pb-1 flex justify-between items-center">
   <h2>Mes prochains trajets</h2>
-  
   <img
     src="assets/icons/Add.svg"
-    alt="Logo VroomVroomCar"
+    alt="Ajouter un covoiturage"
     class="cursor-pointer"
     (click)="openModalAdd()"
+    title="Organiser un nouveau covoiturage"
   />
 </div>
 
+<!-- Tableau affichant les trajets -->
 <table class="table-vroom">
   <thead>
     <tr>
@@ -17,33 +18,52 @@
       <th>Arrivée</th>
       <th>Type véhicule</th>
       <th>Places</th>
-      <th></th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr class="cursor-pointer">
-      <td class="flex justify-between"><span>22/07/2025</span> 9:00</td>
-      <td>Paris</td>
-      <td>Lyon</td>
-      <td>Personnel</td>
-      <td>3/5</td>
-      <td>
-        <button type="button" title="Modifier le trajet" class="cursor-pointer">
-          ✏️
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer text-xl"
-          title="Supprimer le tableau"
-        >
-          🗑️
-        </button>
-      </td>
-    </tr>
+
+    @for (trip of displayTrips; track trip ? trip.id : $index) {
+      <!-- Cas 1 : C'est un vrai trajet (l'objet n'est pas null) -->
+      @if (trip) {
+        <tr class="cursor-pointer" (click)="openModalDetails(trip)">
+          <td class="flex justify-between">
+            <span>{{ trip.dateDebut | date:'dd/MM/yyyy' }}</span>
+            <span>{{ trip.heureDepart }}</span>
+          </td>
+          <td>{{ trip.villeDepart }}</td>
+          <td>{{ trip.villeArrivee }}</td>
+          <td>type vehicule ici</td>
+          <td>{{ trip.nbPlacesRestantes }}/{{ trip.car?.nbDePlaces || '?' }}</td>
+          <td class="">
+            <button type="button" title="Modifier le trajet" class="cursor-pointer" (click)="openModalEdit(trip)">
+              ✏️
+            </button>
+            <button type="button" class="cursor-pointer text-xl" title="Supprimer le trajet" (click)="deleteTrip(trip.id)">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      } @else {
+        <!-- Cas 2 : C'est une ligne vide (l'objet est null) -->
+        <tr class="">
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+      }
+    }
   </tbody>
 </table>
-<button class="btn-primary mx-auto my-4">Voir plus</button>
 
+@if (trips.length > ROWS_TO_DISPLAY) {
+  <button class="btn-primary mx-auto my-4">Voir plus</button>
+}
+
+<!-- Modale d'ajout / d'edition -->
 <app-add-edit-carpooling-modal
   #addEditModal
   (saved)="onCarpoolSaved($event)"
