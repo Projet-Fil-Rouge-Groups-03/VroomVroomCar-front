@@ -17,10 +17,11 @@ import { Car, TypeVehicule } from '../../../../core/models/car.model';
 import { Reservation } from '../../../../core/models/reservation.model';
 import { RequestTrip, Trip } from '../../../../core/models/trip.model';
 import { TripService } from '../../../../core/services/trip';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-edit-carpooling-modal',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './add-edit-carpooling-modal.html',
   styleUrl: './add-edit-carpooling-modal.css',
 })

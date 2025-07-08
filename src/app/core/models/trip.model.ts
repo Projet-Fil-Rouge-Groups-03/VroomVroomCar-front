@@ -1,4 +1,5 @@
 import { Car } from "./car.model";
+import { Reservation } from "./reservation.model";
 import { UserSummary } from "./user.model";
 
 export interface Trip {
@@ -29,4 +30,16 @@ export interface RequestTrip {
   villeArrivee: string;
   organisateurId: number;
   carId: number;
+}
+
+export interface DisplayItem {
+  id: number;
+  type: 'TRIP' | 'RESERVATION';
+  dateDebut: string;
+  heureDepart: string;
+  villeDepart: string;
+  villeArrivee: string;
+  car?: Car;
+  nbPlacesRestantes?: number;
+  originalData: Trip | Reservation; 
 }

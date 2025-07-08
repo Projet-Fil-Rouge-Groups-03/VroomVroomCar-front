@@ -121,7 +121,7 @@
         <option [ngValue]="null" disabled>Choisissez une réservation</option>
         @for(reservation of userCompanyCarReservations(); track reservation.id) {
           <option [value]="reservation.carId">
-             {{ reservation.car?.marque }} {{ reservation.car?.modele }} le {{ reservation.dateDebut }}
+             {{ reservation.car?.marque }} {{ reservation.car?.modele }} le {{ reservation.dateDebut | date:'dd/MM/yyyy' }}
           </option>
         }
       </select>
