@@ -225,7 +225,7 @@
 
   .table-vroom thead th,
   .table-vroom tbody td {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     font-family: var(--font-police);
     color: var(--color-police);
     text-align: center;
