@@ -1,5 +1,4 @@
 import { Component, OnInit, input, ViewChild, computed, inject, signal, effect } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpooling-details-modal';
 import { Trip } from '../../../core/models/trip.model';
 import { CarService } from '../../../core/services/car';
@@ -7,7 +6,7 @@ import { Car } from '../../../core/models/car.model';
 
 @Component({
   selector: 'app-carpooling-card',
-  imports: [CarpoolingDetailsModal, DatePipe],
+  imports: [CarpoolingDetailsModal],
   templateUrl: './carpooling-card.html',
   styleUrl: './carpooling-card.css'
 })
@@ -16,12 +15,7 @@ export class CarpoolingCard {
   trip = input<Trip | undefined>();
 
   // Bloc Aller
-  startTime = computed(() => {
-    const timeString = this.trip()?.heureDepart;
-    // Convertit "HH:MM:SS" en objet Date.
-    // On utilise une date arbitraire (2000-01-01) car seule l'heure nous intéresse.
-    return timeString ? new Date(`2000-01-01T${timeString}`) : new Date('2000-01-01T00:00:00');
-  });
+  startTime = computed(() => this.trip()?.heureDepart ?? 'Heure inconnue');
   startCity = computed(() => this.trip()?.villeDepart ?? 'Ville inconnue');
   startPlace = computed(() => this.trip()?.lieuDepart ?? 'Lieu inconnu');
 
@@ -36,12 +30,7 @@ export class CarpoolingCard {
   });
 
   // Bloc Retour
-  arrivalTime = computed(() => {
-    const timeString = this.trip()?.heureArrivee;
-    // Convertit "HH:MM:SS" en objet Date.
-    // On utilise une date arbitraire (2000-01-01) car seule l'heure nous intéresse.
-    return timeString ? new Date(`2000-01-01T${timeString}`) : new Date('2000-01-01T00:00:00');
-  });
+  arrivalTime = computed(() => this.trip()?.heureArrivee ?? 'Heure inconnue');
   arrivalCity = computed(() => this.trip()?.villeArrivee ?? 'Ville inconnue');
   arrivalPlace = computed(() => this.trip()?.lieuArrivee ?? 'Lieu inconnu');
 
