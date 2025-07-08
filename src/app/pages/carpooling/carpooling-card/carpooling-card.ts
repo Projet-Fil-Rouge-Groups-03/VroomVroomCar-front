@@ -83,7 +83,7 @@ export class CarpoolingCard {
   // --- MODAL DETAILS ---
   @ViewChild('carpoolingDetailsModal') cardModal!: CarpoolingDetailsModal;
   openCardModal() {
-    if (this.cardModal) {
+    if (this.cardModal && this.trip()) {
       this.cardModal.openModal();
     }
   }
