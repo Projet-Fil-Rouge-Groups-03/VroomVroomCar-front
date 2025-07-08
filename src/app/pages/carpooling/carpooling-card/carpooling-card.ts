@@ -20,8 +20,14 @@ export class CarpoolingCard {
   startPlace = computed(() => this.trip()?.lieuDepart ?? 'Lieu inconnu');
 
   // Bloc Temps
-  hours = input<string>('7h');
-  distances = input<string>('450km');
+  distances = computed(() => {
+    const km = this.trip()?.distanceInKm;
+    return km && km > 0 ? `${km.toFixed(1)} km` : 'Distance inconnue';
+  });
+  hours = computed(() => {
+    const time = this.trip()?.timeTravel;
+    return time && time !== 'Inconnue' ? time : 'Durée inconnue';
+  });
 
   // Bloc Retour
   arrivalTime = computed(() => this.trip()?.heureArrivee ?? '??');
@@ -39,7 +45,10 @@ export class CarpoolingCard {
   });
 
   // Bloc du dessous
-  organizer = computed(() => this.trip()?.organisateur?.nom ?? 'Conducteur inconnu');
+  organizerLastname = computed(() => this.trip()?.organisateur?.nom ?? '??');
+  organizerFirstname = computed(() => this.trip()?.organisateur?.prenom ?? '??');
+  organizer = computed(() => `${this.organizerFirstname()} ${this.organizerLastname()}`);
+
   places = computed(() => `${this.trip()?.nbPlacesRestantes ?? 0}`);
 
   
