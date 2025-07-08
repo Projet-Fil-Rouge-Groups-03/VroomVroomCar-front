@@ -18,6 +18,11 @@ export enum CategorieVehicule {
   PICK_UP = 'PICK_UP'
 }
 
+export enum TypeVehicule {
+  VOITURE_SERVICE = 'VOITURE_SERVICE',
+  VOITURE_COVOIT = 'VOITURE_COVOIT'
+}
+
 export interface Car {
   id: number;
   marque: string;
@@ -30,6 +35,7 @@ export interface Car {
   motorisation: Motorisation;
   categorie: CategorieVehicule;
   co2ParKm: number;
+  type: TypeVehicule;
 }
 
 export interface CarRequest {

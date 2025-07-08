@@ -1,1 +1,139 @@
-<p>add-edit-carpooling-modal works!</p>
+<dialog
+  #carpoolingDetailsModal
+  class="relative modal-details"
+  (close)="closeModal()"
+>
+
+  <form [formGroup]="carpoolingForm" (ngSubmit)="save()">
+    <!-- Croix en haut à droite -->
+    <button
+      type="button"
+      class="absolute top-2 right-2 text-[var(--color-police)] cursor-pointer"
+      (click)="closeModal()"
+      aria-label="Fermer la modale"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <h1 class="text-center mb-4">
+      {{ isEditMode ? "Modifier le covoiturage" : "Organiser un covoit" }}
+    </h1>
+
+    <!-- Dates -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <label for="dateDebut" class="pl-1 text-sm">
+        Date début :
+        <input
+          type="date"
+          id="dateDebut"
+          formControlName="dateDebut"
+          class="input-large w-full"
+        />
+      </label>
+      <label for="dateFin" class="pl-1 text-sm">
+        Date fin :
+        <input
+          type="date"
+          id="dateFin"
+          formControlName="dateFin"
+          class="input-large w-full"
+        />
+      </label>
+    </div>
+
+    <!-- Ville -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <input
+        type="text"
+        id="villeDepart"
+        formControlName="villeDepart"
+        placeholder="Ville de départ"
+        class="input-large w-full"
+      />
+      <input
+        type="text"
+        id="villeArrivee"
+        formControlName="villeArrivee"
+        placeholder="Ville d'arrivée"
+        class="input-large w-full"
+      />
+    </div>
+
+    <!-- Lieu -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <input
+        type="text"
+        id="lieuDepart"
+        formControlName="lieuDepart"
+        placeholder="Lieu de départ"
+        class="input-large w-full"
+      />
+      <input
+        type="text"
+        id="lieuArrivee"
+        formControlName="lieuArrivee"
+        placeholder="Lieu d'arrivée"
+        class="input-large w-full"
+      />
+    </div>
+
+    <!-- Heures -->
+    <div class="input-large pr-1 w-full mb-4">
+      <label for="heureDepart">Heure de départ :</label>
+      <select id="heureDepart" formControlName="heureDepart" class="">
+        @for (heure of heures; track heure) {
+            <option [value]="heure">{{ heure }}</option>
+        }
+        </select>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Option 1 : Véhicule perso -->
+    <label class="input-large">
+      <input type="radio" value="personal" formControlName="vehicleChoice">
+      Véhicule personnel
+    </label>
+
+    <!-- Option 2 : Véhicule de service -->
+    <label class="input-large">
+      <input type="radio" value="service" formControlName="vehicleChoice">
+      Véhicule de service
+    </label>
+  </div>
+
+  <!-- Le sélecteur pour les voitures de service n'est affiché QUE si le choix est "service" -->
+  @if (carpoolingForm.get('vehicleChoice')?.value === 'service') {
+    <div class="input-large w-full mt-3">
+      <select formControlName="carId" class="input-large w-full">
+        <option [ngValue]="null" disabled>Choisissez une réservation</option>
+        @for(reservation of userCompanyCarReservations(); track reservation.id) {
+          <option [value]="reservation.carId">
+             {{ reservation.car?.marque }} {{ reservation.car?.modele }} le {{ reservation.dateDebut | date:'dd/MM/yyyy' }}
+          </option>
+        }
+      </select>
+    </div>
+  }
+
+    <!-- Boutons -->
+    <div class="flex justify-center gap-4 mt-8">
+      <button type="button" class="btn-modal" (click)="closeModal()">
+        Annuler
+      </button>
+      <button type="submit" class="btn-modal">Valider</button>
+    </div>
+  </form>
+</dialog>
