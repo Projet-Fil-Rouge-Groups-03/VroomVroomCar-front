@@ -2,7 +2,7 @@
   <div class="p-6 text-center">
     
     <!-- Titre dynamique -->
-    <h2 class="text-xl font-semibold mb-4">{{ title }}</h2>
+    <h2 class="mb-4">{{ title }}</h2>
     
     <!-- Avertissement optionnel -->
     @if (warningMessage) {
@@ -11,10 +11,10 @@
 
     <!-- Boutons d'action -->
     <div class="flex justify-center gap-4">
-      <button type="button" class="btn-modal-secondary" (click)="close()">
+      <button type="button" class="btn-modal" (click)="close()">
         Annuler
       </button>
-      <button type="button" class="btn-modal-danger" (click)="onConfirm()">
+      <button type="button" class="btn-primary" (click)="onConfirm()">
         Valider
       </button>
     </div>
