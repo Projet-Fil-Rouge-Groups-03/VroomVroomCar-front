@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, OnDestroy, signal } from '@angular/core';
 import { Subscribe } from '../../../core/models/subscribe.model';
 import { Subject } from 'rxjs';
 

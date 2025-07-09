@@ -17,20 +17,8 @@ import { TripService } from '../../../core/services/trip';
 })
 export class Carpooling {
 
-  trips: Trip[] = [];
 
-  constructor(
-    private tripService: TripService,
-  ) {}
-
-  ngOnInit(): void {
-    this.loadTrips();
-  }
-
-  // Charger toutes les trips
-  loadTrips(): void {
-    this.tripService.getAllTrips().subscribe(trips => this.trips = trips);
-  }
+  constructor() {}
 
   // --- FILTER ---
   isFilterMenuVisible = false;
