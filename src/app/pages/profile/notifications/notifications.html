@@ -1,1 +1,17 @@
-<p>notifications works!</p>
+<table class="table-auto w-full">
+  <thead>
+    <tr class="bg-green">
+      <th class="border-r">Nom</th>
+      <th class="border-r">Date</th>
+      <th class="">Objet</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(notification of this.notifications; track notification){
+        <tr>
+            <td class="border-r">{{ notification.nom }}</td>
+            <td class="border-r">{{ notification.date }}</td>
+            <td>{{ notification.contenu }}</td>
+        </tr>
+    }
+  </tbody>
