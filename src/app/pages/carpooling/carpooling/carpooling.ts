@@ -3,7 +3,6 @@ import { CarpoolingList } from '../carpooling-list/carpooling-list';
 import { AdCorner } from '../ad-corner/ad-corner';
 import { CarpoolingFilter } from '../carpooling-filter/carpooling-filter';
 import { CommonModule } from '@angular/common';
-import { Trip } from '../../../core/models/trip.model';
 import { TripService } from '../../../core/services/trip';
 
 @Component({
@@ -18,7 +17,7 @@ import { TripService } from '../../../core/services/trip';
 export class Carpooling {
 
 
-  constructor() {}
+  constructor(private tripService: TripService) {}
 
   // --- FILTER ---
   isFilterMenuVisible = false;
@@ -32,7 +31,15 @@ export class Carpooling {
       'Recherche lancée depuis le parent avec les filtres :',
       filters
     );
-    // Logique pour appeler le service viendra ici...
+    this.tripService.searchTrips(
+      filters.villeDepart,
+      filters.villeArrivee,
+      filters.dateDebutStr,
+      filters.heureDepart,
+      filters.typeVehicule
+    ).subscribe({
+
+    })
 
     this.isFilterMenuVisible = false;
   }
