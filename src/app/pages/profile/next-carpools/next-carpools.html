@@ -101,7 +101,7 @@
 
 <!-- Modale d'ajout / d'edition -->
 <app-add-edit-carpooling-modal
-  [dataToEdit]="modalData()"
+  [dataToEdit]="modalAddEditData()"
   [userPersonalCars]="userPersonalCars()"
   [userCompanyCarReservations]="serviceReservations"
   (saved)="onCarpoolSaved()"
@@ -110,3 +110,12 @@
 
 <!-- Modale de suppression -->
 <app-delete-confirmation-modal (confirmed)="onDeleteConfirmed()"></app-delete-confirmation-modal>
+
+<!-- Modale de details -->
+<app-carpooling-details-modal
+  #carDetailsModal
+  [mode]="'view-only'"
+  [tripDetails]="detailsModalItem()?.originalData"
+  [organizer]="getOrganizerName(detailsModalItem())"
+  (closed)="onDetailsModalClosed()"
+></app-carpooling-details-modal>

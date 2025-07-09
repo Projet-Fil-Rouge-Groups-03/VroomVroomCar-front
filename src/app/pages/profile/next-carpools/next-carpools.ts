@@ -64,7 +64,8 @@ export class NextCarpools implements OnChanges {
   readonly ROWS_TO_DISPLAY = 5;
   private itemToDelete: DisplayItem | null = null;
   private isLoading = false;
-  modalData: WritableSignal<Partial<Trip> | null> = signal(null);
+  modalAddEditData: WritableSignal<Partial<Trip> | null> = signal(null);
+  detailsModalItem: WritableSignal<DisplayItem | null> = signal(null);
 
   constructor(
     private tripService: TripService,
@@ -167,17 +168,17 @@ export class NextCarpools implements OnChanges {
   openModalAdd() {
     const user = this.currentUser();
     if (!user) return;
-    this.modalData.set({ organisateurId: user.id });
+    this.modalAddEditData.set({ organisateurId: user.id });
   }
 
   openModalEdit(item: DisplayItem) {
     if (item.type === 'TRIP') {
-      this.modalData.set(item.originalData as Trip);
+      this.modalAddEditData.set(item.originalData as Trip);
     }
   }
 
   closeModal() {
-    this.modalData.set(null);
+    this.modalAddEditData.set(null);
   }
 
   onCarpoolSaved() {
@@ -266,7 +267,24 @@ export class NextCarpools implements OnChanges {
   }
 
   openModalDetails(item: DisplayItem) {
-    console.log('Ouverture des détails pour :', item);
-    // Logique à implémenter pour la modale de détails
+    this.detailsModalItem.set(item);
+    setTimeout(() => {
+      if (this.carDetailsModal) {
+        this.carDetailsModal.openModal();
+      }
+    }, 0);
+  }
+
+  onDetailsModalClosed() {
+    this.detailsModalItem.set(null);
+  }
+
+  getOrganizerName(item: DisplayItem | null): string {
+    if (!item) return '';
+    if (item.type === 'TRIP') {
+      const org = (item.originalData as Trip).organisateur;
+      return org ? `${org.prenom} ${org.nom}` : 'Organisateur inconnu';
+    }
+    return 'Réservation de service';
   }
 }

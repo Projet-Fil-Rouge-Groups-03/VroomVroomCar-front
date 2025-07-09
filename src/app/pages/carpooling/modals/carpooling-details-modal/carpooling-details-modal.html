@@ -1,4 +1,4 @@
-<dialog #carpoolingDetailsModal 
+<dialog #carpoolingDetailsModal (close)="onDialogClose()"
 class="relative modal-details"
 >
     <!--Croix en haut à droite-->
@@ -33,7 +33,9 @@ class="relative modal-details"
     </div>
     <div class="flex justify-end pr-4 space-x-8">
         <button class="btn-modal" (click)="closeModal()">Annuler</button>
-        <button class="btn-modal">Réserver</button>
+        @if (mode() === 'booking') {
+          <button class="btn-modal">Réserver</button>
+        }
     </div>
   </div>
 
