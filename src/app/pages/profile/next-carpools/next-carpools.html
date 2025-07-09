@@ -22,47 +22,65 @@
     </tr>
   </thead>
   <tbody>
-  @for (item of displayItems; track item ? item.id + item.type : $index) {
-    @if (item) {
-      <!-- On peut ajouter une classe pour différencier visuellement -->
-      <tr class="cursor-pointer" [class.reservation-row]="item.type === 'RESERVATION'" (click)="openModalDetails(item)">
-        <td>
-          <div style="display: inline-block; width: 50%; text-align: left">
+    @for (item of displayItems; track item ? item.id + item.type : $index) { @if
+    (item) {
+    <!-- On peut ajouter une classe pour différencier visuellement -->
+    <tr
+      class="cursor-pointer"
+      [class.reservation-row]="item.type === 'RESERVATION'"
+      (click)="openModalDetails(item)"
+    >
+      <td>
+        <div style="display: inline-block; width: 50%; text-align: left">
           {{ item.dateDebut | date : "dd/MM/yyyy" }}
         </div>
         <div style="display: inline-block; width: 50%; text-align: right">
           {{ item.heureDepart }}
         </div>
-        </td>
-        <td>{{ item.villeDepart }}</td>
-        <td>{{ item.villeArrivee }}</td>
-        
-        <!-- Affichage du Type -->
-        <td>
-          @if(item.type === 'TRIP') {
-            <span>{{ item.car?.type === 'VOITURE_SERVICE' ? 'Covoit service' : 'Covoit perso' }}</span>
-          } @else {
-            <span>Réservation service</span>
-          }
-        </td>
+      </td>
+      <td>{{ item.villeDepart }}</td>
+      <td>{{ item.villeArrivee }}</td>
 
-        <!-- Affichage des Places -->
-        <td>
-          @if(item.type === 'TRIP') {
-            <span>{{ item.nbPlacesRestantes }}/{{ item.car?.nbDePlaces || '?' }}</span>
-          } @else {
-            <span>-</span>
-          }
-        </td>
+      <!-- Affichage du Type -->
+      <td>
+        @if(item.type === 'TRIP') {
+        <span>{{
+          item.car?.type === "VOITURE_SERVICE"
+            ? "Covoit service"
+            : "Covoit perso"
+        }}</span>
+        } @else {
+        <span>Réservation service</span>
+        }
+      </td>
 
-        <!-- Affichage des Actions -->
-        <td>
-          @if (item.type === 'TRIP') {
-            <button (click)="$event.stopPropagation(); openModalEdit(item)">✏️</button>
-          }
-          <button (click)="$event.stopPropagation(); deleteItem(item)">🗑️</button>
-        </td>
-      </tr>
+      <!-- Affichage des Places -->
+      <td>
+        @if(item.type === 'TRIP') {
+        <span
+          >{{ item.nbPlacesRestantes }}/{{ item.car?.nbDePlaces || "?" }}</span
+        >
+        } @else {
+        <span>-</span>
+        }
+      </td>
+
+      <!-- Affichage des Actions -->
+      <td class="cursor-default py-0.5">
+        @if (item.type === 'TRIP') {
+        <div style="display: inline-block; width: 50%; text-align: left">
+          <button class="cursor-pointer text-xl" (click)="$event.stopPropagation(); openModalEdit(item)">
+            ✏️
+          </button>
+        </div>
+        }
+        <div style="display: inline-block; width: 50%; text-align: right">
+          <button class="cursor-pointer text-xl" (click)="$event.stopPropagation(); deleteItem(item)">
+            🗑️
+          </button>
+        </div>
+      </td>
+    </tr>
     } @else {
     <!-- Cas 2 : C'est une ligne vide (l'objet est null) -->
     <tr class="">
@@ -83,6 +101,21 @@
 
 <!-- Modale d'ajout / d'edition -->
 <app-add-edit-carpooling-modal
-  #addEditModal
-  (saved)="onCarpoolSaved($event)"
+  [dataToEdit]="modalAddEditData()"
+  [userPersonalCars]="userPersonalCars()"
+  [userCompanyCarReservations]="serviceReservations"
+  (saved)="onCarpoolSaved()"
+  (closed)="closeModal()"
 ></app-add-edit-carpooling-modal>
+
+<!-- Modale de suppression -->
+<app-delete-confirmation-modal (confirmed)="onDeleteConfirmed()"></app-delete-confirmation-modal>
+
+<!-- Modale de details -->
+<app-carpooling-details-modal
+  #carDetailsModal
+  [mode]="'view-only'"
+  [tripDetails]="detailsModalItem()?.originalData"
+  [organizer]="getOrganizerName(detailsModalItem())"
+  (closed)="onDetailsModalClosed()"
+></app-carpooling-details-modal>

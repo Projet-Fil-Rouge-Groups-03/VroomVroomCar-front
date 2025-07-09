@@ -1,7 +1,14 @@
-// Fichier: src/app/components/next-carpools/next-carpools.ts
-
-import { Component, input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  input,
+  OnChanges,
+  signal,
+  SimpleChanges,
+  ViewChild,
+  WritableSignal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { EMPTY, forkJoin, Observable, tap } from 'rxjs'; // On garde forkJoin pour la robustesse future
 
 // --- Imports des modèles et services ---
 import { AddEditCarpoolingModal } from '../modals/add-edit-carpooling-modal/add-edit-carpooling-modal';
@@ -11,9 +18,10 @@ import { Reservation } from '../../../core/models/reservation.model';
 import { User } from '../../../core/models/user.model';
 import { Car } from '../../../core/models/car.model';
 import { TripService } from '../../../core/services/trip';
-import { ReservationService } from '../../../core/services/reservation'; 
+import { ReservationService } from '../../../core/services/reservation';
+import { DeleteConfirmationModal } from '../modals/delete-confirmation-modal/delete-confirmation-modal';
+import { SubscribeService } from '../../../core/services/subscribe';
 
-// --- Modèle de vue commun pour l'affichage ---
 export interface DisplayItem {
   id: number;
   type: 'TRIP' | 'RESERVATION';
@@ -28,7 +36,13 @@ export interface DisplayItem {
 
 @Component({
   selector: 'app-next-carpools',
-  imports: [AddEditCarpoolingModal, CommonModule, CarpoolingDetailsModal],
+  standalone: true,
+  imports: [
+    AddEditCarpoolingModal,
+    CommonModule,
+    CarpoolingDetailsModal,
+    DeleteConfirmationModal,
+  ],
   templateUrl: './next-carpools.html',
   styleUrl: './next-carpools.css',
   host: {
@@ -36,58 +50,78 @@ export interface DisplayItem {
   },
 })
 export class NextCarpools implements OnChanges {
-  @ViewChild('addEditModal') addEditModal!: AddEditCarpoolingModal;
+  @ViewChild(DeleteConfirmationModal) deleteModal!: DeleteConfirmationModal;
   @ViewChild('carDetailsModal') carDetailsModal!: CarpoolingDetailsModal;
 
   // --- PROPRIÉTÉS REÇUES DU PARENT ---
   currentUser = input<User | null>();
   userPersonalCars = input<Car[]>([]);
-  userCompanyCarReservations = input<Reservation[]>([]);
 
-  // --- PROPRIÉTÉS POUR L'AFFICHAGE ---
-  private allItems: DisplayItem[] = []; // Contient la liste fusionnée et triée
-  displayItems: (DisplayItem | null)[] = []; // Ce qui est réellement affiché (avec les placeholders)
+  // --- PROPRIÉTÉS POUR LES DONNEES ET L'AFFICHAGE ---
+  serviceReservations: Reservation[] = [];
+  private allItems: DisplayItem[] = [];
+  displayItems: (DisplayItem | null)[] = [];
   readonly ROWS_TO_DISPLAY = 5;
+  private itemToDelete: DisplayItem | null = null;
+  private isLoading = false;
+  modalAddEditData: WritableSignal<Partial<Trip> | null> = signal(null);
+  detailsModalItem: WritableSignal<DisplayItem | null> = signal(null);
 
   constructor(
     private tripService: TripService,
-    private reservationService: ReservationService
+    private reservationService: ReservationService,
+    private subscribeService: SubscribeService
   ) {}
 
   /**
    * Réagit aux changements des données venant du parent.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.currentUser()) {
-      this.loadUpcomingTrips(this.currentUser()!.id);
-    } else {
+    const user = this.currentUser();
+    if (user && changes['currentUser']) {
+      this.refreshAllData(user.id);
+    } else if (!user) {
       this.allItems = [];
+      this.serviceReservations = [];
       this.prepareDisplayData();
     }
   }
 
   /**
-   * Charge les trajets organisés par l'utilisateur.
+   * Méthode centrale pour rafraîchir toutes les données.
    */
-  loadUpcomingTrips(userId: number): void {
-    this.tripService.getUpcomingTrip(userId).subscribe({
-      next: (trips) => {
-        this.combineAndSortAllItems(trips, this.userCompanyCarReservations());
+  refreshAllData(userId: number): void {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    console.log(
+      "[NextCarpools] Chargement de toutes les données pour l'utilisateur ID:",
+      userId
+    );
+
+    forkJoin({
+      trips: this.tripService.getUpcomingTrip(userId),
+      reservations:
+        this.reservationService.getUpcomingReservationsByUserId(userId),
+    }).subscribe({
+      next: ({ trips, reservations }) => {
+        console.log('[NextCarpools] Données reçues :', { trips, reservations });
+        this.serviceReservations = reservations;
+        this.combineAndSortAllItems(trips, reservations);
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Erreur lors du chargement des trajets :', err);
-        this.combineAndSortAllItems([], this.userCompanyCarReservations());
+        console.error('Erreur lors du chargement des données combinées :', err);
+        this.isLoading = false;
       },
     });
   }
 
   /**
-   * Coeur de la logique : prend les deux listes, les transforme,
-   * les fusionne, les trie, et met à jour l'affichage.
+   * Coeur de la logique : prend les deux listes, les transforme, les fusionne, les trie, et met à jour l'affichage.
    */
   combineAndSortAllItems(trips: Trip[], reservations: Reservation[]): void {
-    // 1. Transformer les Trips en DisplayItem
-    const tripItems: DisplayItem[] = trips.map(trip => ({
+    // 1. Transformer les Trips
+    const tripItems: DisplayItem[] = trips.map((trip) => ({
       id: trip.id,
       type: 'TRIP',
       dateDebut: trip.dateDebut,
@@ -99,14 +133,14 @@ export class NextCarpools implements OnChanges {
       originalData: trip,
     }));
 
-    // 2. Transformer les Réservations en DisplayItem
-    const reservationItems: DisplayItem[] = reservations.map(res => ({
+    // 2. Transformer les Réservations
+    const reservationItems: DisplayItem[] = reservations.map((res) => ({
       id: res.id,
       type: 'RESERVATION',
       dateDebut: res.dateDebut,
-      heureDepart: " ", 
-      villeDepart: " ",
-      villeArrivee: " ",
+      heureDepart: ' ',
+      villeDepart: `${res.car?.marque || ''} ${res.car?.modele || ''}`,
+      villeArrivee: 'Véhicule de service',
       car: res.car,
       originalData: res,
     }));
@@ -118,85 +152,139 @@ export class NextCarpools implements OnChanges {
       return dateA - dateB;
     });
 
-    // 4. Mettre à jour l'affichage avec les placeholders
+    // 4. Mettre à jour l'affichage
     this.prepareDisplayData();
   }
 
-  /**
-   * Prépare le tableau pour l'affichage en complétant avec des lignes vides.
-   */
   prepareDisplayData(): void {
     const realData = this.allItems.slice(0, this.ROWS_TO_DISPLAY);
     const placeholdersNeeded = this.ROWS_TO_DISPLAY - realData.length;
-    const placeholders = Array(placeholdersNeeded > 0 ? placeholdersNeeded : 0).fill(null);
+    const placeholders = Array(
+      placeholdersNeeded > 0 ? placeholdersNeeded : 0
+    ).fill(null);
     this.displayItems = [...realData, ...placeholders];
   }
 
-  /**
-   * Ouvre la modale pour AJOUTER un NOUVEAU trajet.
-   */
   openModalAdd() {
     const user = this.currentUser();
     if (!user) return;
-    const defaultTripData = { organisateurId: user.id };
-    this.addEditModal.userPersonalCars = this.userPersonalCars;
-    this.addEditModal.userCompanyCarReservations = this.userCompanyCarReservations;
-    this.addEditModal.openModal(defaultTripData);
+    this.modalAddEditData.set({ organisateurId: user.id });
   }
 
-  /**
-   * Ouvre la modale pour MODIFIER un trajet existant.
-   */
   openModalEdit(item: DisplayItem) {
-    // On s'assure qu'on édite bien un Trip
     if (item.type === 'TRIP') {
-      this.addEditModal.userPersonalCars = this.userPersonalCars;
-      this.addEditModal.userCompanyCarReservations = this.userCompanyCarReservations;
-      this.addEditModal.openModal(item.originalData as Trip);
+      this.modalAddEditData.set(item.originalData as Trip);
     }
   }
 
-  /**
-   * Après une sauvegarde, on recharge tout pour être à jour.
-   */
-  onCarpoolSaved(savedTrip: Trip) {
+  closeModal() {
+    this.modalAddEditData.set(null);
+  }
+
+  onCarpoolSaved() {
     const user = this.currentUser();
     if (user) {
-      this.loadUpcomingTrips(user.id);
+      this.refreshAllData(user.id);
     }
   }
 
-  /**
-   * Gère la suppression d'un item (Trip ou Reservation).
-   */
   deleteItem(item: DisplayItem): void {
-    const user = this.currentUser();
-    if (!user) return;
-    
+    this.itemToDelete = item;
+    let title = '';
+    let warningMessage: string | null = null;
+
+    // Déterminer si l'utilisateur est l'organisateur du covoiturage
+    const isOrganizer =
+      item.type === 'TRIP' &&
+      (item.originalData as Trip).organisateurId === this.currentUser()?.id;
+
     if (item.type === 'TRIP') {
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce covoiturage ?')) {
-        this.tripService.deleteTrip(item.id).subscribe({
-          next: () => this.loadUpcomingTrips(user.id),
-          error: (err) => console.error(`Erreur lors de la suppression du trajet ${item.id}`, err),
-        });
+      if (isOrganizer) {
+        title = 'Voulez-vous vraiment annuler ce covoiturage ?';
+        warningMessage = 'Un message sera envoyé aux participants.';
+      } else {
+        title = 'Voulez-vous vraiment annuler votre participation ?';
+        warningMessage = 'Un message sera envoyé à l’organisateur.';
       }
     } else if (item.type === 'RESERVATION') {
-      if (confirm('Êtes-vous sûr de vouloir annuler cette réservation de véhicule ?')) {
-        this.reservationService.deleteReservation(item.id).subscribe({
-          next: () => this.loadUpcomingTrips(user.id), // On recharge tout pour rafraîchir
-          error: (err) => console.error(`Erreur lors de la suppression de la réservation ${item.id}`, err),
-        });
-      }
+      title = 'Voulez-vous vraiment annuler cette réservation ?';
+      warningMessage = 'Le véhicule de service sera de nouveau disponible.';
     }
+
+    // On ouvre la modale avec les textes personnalisés
+    this.deleteModal.open(title, warningMessage);
   }
 
   /**
-   * Ouvre la modale de détails.
+   * Cette méthode est appelée LORSQUE la modale de confirmation émet l'événement "confirmed".
    */
+  onDeleteConfirmed(): void {
+    if (!this.itemToDelete) {
+      console.error("Aucun item à supprimer n'a été défini.");
+      return;
+    }
+
+    const user = this.currentUser();
+    if (!user) return;
+
+    let deleteAction$: Observable<any>;
+    const item = this.itemToDelete;
+
+    const isOrganizer =
+      item.type === 'TRIP' &&
+      (item.originalData as Trip).organisateurId === user.id;
+
+    if (item.type === 'TRIP') {
+      if (isOrganizer) {
+        // L'utilisateur est l'organisateur, il supprime le trajet complet
+        deleteAction$ = this.tripService.deleteTrip(item.id);
+      } else {
+        // L'utilisateur est participant, il se desinscrit
+        deleteAction$ = this.subscribeService.delete(user.id, item.id);
+        console.log('Logique de désinscription à implémenter.');
+      }
+    } else if (item.type === 'RESERVATION') {
+      // L'utilisateur supprime sa réservation de véhicule de service
+      deleteAction$ = this.reservationService.deleteReservation(item.id);
+    } else {
+      deleteAction$ = EMPTY; // Ne devrait jamais arriver
+    }
+
+    deleteAction$.subscribe({
+      next: () => {
+        this.refreshAllData(user.id);
+      },
+      error: (err) =>
+        console.error(
+          `Erreur lors de la suppression de l'item ${item.id}`,
+          err
+        ),
+      complete: () => {
+        // On nettoie l'item en attente
+        this.itemToDelete = null;
+      },
+    });
+  }
+
   openModalDetails(item: DisplayItem) {
-    console.log("Ouverture des détails pour :", item);
-    // La modale de détail ne semble attendre qu'un 'organizer'.
-    // On doit l'adapter ou créer une nouvelle modale pour les détails unifiés.
-    // this.carDetailsModal.openModal();
+    this.detailsModalItem.set(item);
+    setTimeout(() => {
+      if (this.carDetailsModal) {
+        this.carDetailsModal.openModal();
+      }
+    }, 0);
+  }
+
+  onDetailsModalClosed() {
+    this.detailsModalItem.set(null);
+  }
+
+  getOrganizerName(item: DisplayItem | null): string {
+    if (!item) return '';
+    if (item.type === 'TRIP') {
+      const org = (item.originalData as Trip).organisateur;
+      return org ? `${org.prenom} ${org.nom}` : 'Organisateur inconnu';
+    }
+    return 'Réservation de service';
   }
 }

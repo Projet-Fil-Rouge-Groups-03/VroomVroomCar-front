@@ -53,8 +53,6 @@ describe('TripService', () => {
     dateDebut: '2024-01-15',
     dateFin: '2024-01-15',
     heureDepart: '09:00',
-    heureArrivee: '12:00',
-    nbPlacesRestantes: 3,
     organisateurId: 1,
     carId: 1
   };

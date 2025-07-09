@@ -33,8 +33,8 @@ export class TripService {
     return this.http.put<Trip>(`${this.apiURL}/update/${id}`, trip);
   }
   // Delete Trip (DELETE)
-  deleteTrip(id : number) : Observable<Trip>{
-    return this.http.delete<Trip>(`${this.apiURL}/${id}`);
+  deleteTrip(tripId: number): Observable<any> {
+    return this.http.delete(`${this.apiURL}/delete/${tripId}`, { responseType: 'text' });
   }
   // === GET + spécifiques === //
   searchTrips(villeDepart?: string, villeArrivee?: string, dateDebutStr?: string, heureDepart?: string, vehiculeType: VehiculeType = VehiculeType.TOUS
