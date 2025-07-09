@@ -1,19 +1,13 @@
 <p>Liste des passagers</p>
 <div class="flex flex-col border-2 border-[var(--color-green)] rounded-sm">
-    <div class="flex flex-row items-center gap-2 p-1.5">
-        <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
-        <p>{{ participants() }}</p>
-    </div>
-    <div class="flex flex-row items-center gap-2 p-1.5">
-        <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
-        <p>{{ participants() }}</p>
-    </div>
-    <div class="flex flex-row items-center gap-2 p-1.5">
-        <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
-        <p>{{ participants() }}</p>
-    </div>
-    <div class="flex flex-row items-center gap-2 p-1.5">
-        <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
-        <p>{{ participants() }}</p>
-    </div>
+    @if (participantNames().length > 0) {
+        @for (name of participantNames(); track $index) {
+            <div class="flex flex-row items-center gap-2 p-1.5">
+            <img src="assets/icons/avatar.svg" alt="avatar" class="h-8" />
+            <p>{{ name }}</p>
+            </div>
+        }
+    } @else {
+        <p>Aucun participant trouvé.</p>
+    }
 </div>

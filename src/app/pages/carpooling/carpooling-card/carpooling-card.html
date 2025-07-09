@@ -39,7 +39,7 @@
           src="assets/icons/add-circle-svgrepo-com 1.svg"
           class="w-8 md:w-10"
         />
-        <p class="text-light text-sm text-gray-400 self-end">{{CO2()}}g CO²</p>
+        <p class="text-light text-sm text-gray-400 self-end">{{pollution()}}g CO²</p>
       </div>
     </div>
 
@@ -64,5 +64,6 @@
 <!-- MODAL -->
 <app-carpooling-details-modal
   #carpoolingDetailsModal
+  [tripDetails]="trip()"
   [organizer]= organizer()
 ></app-carpooling-details-modal>

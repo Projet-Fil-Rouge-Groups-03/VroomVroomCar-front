@@ -1,8 +1,15 @@
 <div class="max-w-[650px] w-full mx-auto flex flex-col h-full gap-8 justify-content-evenly py-8">
-    @for (trip of trips(); track trip.id) {
-        <app-carpooling-card [trip]="trip"/>
-    }@empty {
-        <p>Aucun trajet trouvé.</p>
+    @if (trips().length === 0) {
+        <p>Chargement des trajets...</p>
+    } @else {
+        @for (trip of displayedTrips(); track trip.id) {
+            <app-carpooling-card [trip]="trip"/>
+        }@empty {
+            <p>Aucun trajet trouvé.</p>
+        }
+        @if (showMoreButton()) {
+            <button class="btn-primary self-center" (click)="loadMoreTrips()">Voir plus</button>
+        }
     }
-    <button class="btn-primary self-center">Voir plus</button>
+
 </div>

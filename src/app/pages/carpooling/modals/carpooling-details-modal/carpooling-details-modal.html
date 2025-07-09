@@ -23,12 +23,12 @@ class="relative modal-details"
                 </div>
             </div>
             <div>
-                <app-modal-participants-informations></app-modal-participants-informations>
+                <app-modal-participants-informations [participants]="subscribers()"></app-modal-participants-informations>
             </div>
         </div>
         <!--Côté droite de la modale-->
         <div class="pt-4">
-            <app-modal-car-informations></app-modal-car-informations>
+            <app-modal-car-informations [car]="carForModalCarInfos()"></app-modal-car-informations>
         </div>
     </div>
     <div class="flex justify-end pr-4 space-x-8">

@@ -1,5 +1,7 @@
 export interface Subscribe {
   userId: number;
+  prenom: string,
+  nom: string,
   tripId: number;
   dateInscription: string;
 }

@@ -17,6 +17,9 @@ export interface Trip {
   carId: number;
   car?: Car;
   organisateur?: UserSummary;
+  timeTravel?: string;
+  distanceInKm?: number;
+  pollution?: number;
 }
 
 export interface RequestTrip {

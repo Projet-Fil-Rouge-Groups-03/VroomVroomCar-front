@@ -15,16 +15,22 @@ export class CarpoolingCard {
   trip = input<Trip | undefined>();
 
   // Bloc Aller
-  startTime = computed(() => this.trip()?.heureDepart ?? '00:00');
+  startTime = computed(() => this.trip()?.heureDepart ?? 'Heure inconnue');
   startCity = computed(() => this.trip()?.villeDepart ?? 'Ville inconnue');
   startPlace = computed(() => this.trip()?.lieuDepart ?? 'Lieu inconnu');
 
   // Bloc Temps
-  hours = input<string>('7h');
-  distances = input<string>('450km');
+  distances = computed(() => {
+    const km = this.trip()?.distanceInKm;
+    return km && km > 0 ? `${km.toFixed(1)} km` : 'Distance inconnue';
+  });
+  hours = computed(() => {
+    const time = this.trip()?.timeTravel;
+    return time && time !== 'Inconnue' ? time : 'Durée inconnue';
+  });
 
   // Bloc Retour
-  arrivalTime = computed(() => this.trip()?.heureArrivee ?? '??');
+  arrivalTime = computed(() => this.trip()?.heureArrivee ?? 'Heure inconnue');
   arrivalCity = computed(() => this.trip()?.villeArrivee ?? 'Ville inconnue');
   arrivalPlace = computed(() => this.trip()?.lieuArrivee ?? 'Lieu inconnu');
 
@@ -32,14 +38,13 @@ export class CarpoolingCard {
   carService = inject(CarService);
   car = signal<Car | null>(null);
 
-  // POLLUTION, PAS CO2
-  CO2 = computed(() => {
-    const carData = this.car();
-    return carData ? `${carData.co2ParKm}` : '...';
-  });
+  pollution = computed(() => `${this.trip()?.pollution ?? 0}`);
 
   // Bloc du dessous
-  organizer = computed(() => this.trip()?.organisateur?.nom ?? 'Conducteur inconnu');
+  organizerLastname = computed(() => this.trip()?.organisateur?.nom ?? '??');
+  organizerFirstname = computed(() => this.trip()?.organisateur?.prenom ?? '??');
+  organizer = computed(() => `${this.organizerFirstname()} ${this.organizerLastname()}`);
+
   places = computed(() => `${this.trip()?.nbPlacesRestantes ?? 0}`);
 
   
@@ -64,7 +69,7 @@ export class CarpoolingCard {
   // --- MODAL DETAILS ---
   @ViewChild('carpoolingDetailsModal') cardModal!: CarpoolingDetailsModal;
   openCardModal() {
-    if (this.cardModal) {
+    if (this.cardModal && this.trip()) {
       this.cardModal.openModal();
     }
   }
