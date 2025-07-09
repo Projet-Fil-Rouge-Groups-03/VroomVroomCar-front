@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
   templateUrl: './modal-participants-informations.html',
   styleUrl: './modal-participants-informations.css'
 })
-export class ModalParticipantsInformations implements OnDestroy {
+export class ModalParticipantsInformations{
   participants = input<Subscribe[] | undefined>();
 
   participantNames = computed<string[]>(() => {
@@ -26,8 +26,4 @@ export class ModalParticipantsInformations implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor() {}
-  
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
 }

@@ -1,14 +1,24 @@
 <div class="max-w-[650px] w-full mx-auto flex flex-col h-full gap-8 justify-content-evenly py-8">
-    @if (trips().length === 0) {
+    @if (allLoadedTrips().length === 0 && isLoading()) {
         <p>Chargement des trajets...</p>
+    } @else if (allLoadedTrips().length === 0 && !isLoading()) {
+        <p>Aucun trajet disponible pour le moment.</p>
     } @else {
-        @for (trip of displayedTrips(); track trip.id) {
+        @for (trip of allLoadedTrips(); track trip.id) {
             <app-carpooling-card [trip]="trip"/>
         }@empty {
             <p>Aucun trajet trouvé.</p>
         }
         @if (showMoreButton()) {
-            <button class="btn-primary self-center" (click)="loadMoreTrips()">Voir plus</button>
+            <button class="btn-primary self-center" (click)="loadMoreTrips()">
+                @if (isLoading()) {
+                    Chargement...
+                } @else {
+                    Voir plus
+                }
+            </button>
+        } @else if (!showMoreButton() && totalTripsCount() > 0) {
+            <p class="end-of-list-message">Vous avez vu tous les trajets disponibles.</p>
         }
     }
 
