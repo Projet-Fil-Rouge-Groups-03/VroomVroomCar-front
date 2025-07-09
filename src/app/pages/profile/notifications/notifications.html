@@ -17,6 +17,15 @@
             <td>{{ notification.contenu }}</td>
         </tr>
     }
+    @if(visibleNotifications.length<5){
+      @for(i of missingLines; track i){
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+      }
+    }
   </tbody>
 </table>
 
