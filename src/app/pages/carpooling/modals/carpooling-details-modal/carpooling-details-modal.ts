@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
 import { ModalParticipantsInformations } from '../../../../shared/components/modal-participants-informations/modal-participants-informations';
 import { ModalCarInformations } from '../../../../shared/components/modal-car-informations/modal-car-informations';
 import { Trip } from '../../../../core/models/trip.model';
