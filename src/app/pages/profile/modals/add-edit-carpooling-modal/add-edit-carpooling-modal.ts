@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  effect,
   ElementRef,
   input,
   OnInit,
@@ -28,18 +29,32 @@ import { CommonModule } from '@angular/common';
 export class AddEditCarpoolingModal implements OnInit {
   @ViewChild('carpoolingDetailsModal') myDialog!: ElementRef<HTMLDialogElement>;
 
-  closed = output<void>();
-  saved = output<any>();
   heures: string[] = [];
   carpoolingForm!: FormGroup;
   isEditMode = false;
+  dataToEdit = input<Partial<Trip> | null>(null);
   userPersonalCars = input<Car[]>([]);
   userCompanyCarReservations = input<Reservation[]>([]);
-  currentTripId: number | null = null;
-  organisateurId: number | null = null; 
+  closed = output<void>();
+  saved = output<Trip>();
 
-  constructor(private fb: FormBuilder, private tripService: TripService,
-    private cdr: ChangeDetectorRef) {}
+  currentTripId: number | null = null;
+  organisateurId: number | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private tripService: TripService,
+    private cdr: ChangeDetectorRef
+  ) {
+    effect(() => {
+      const data = this.dataToEdit();
+      if (data) {
+        this.openModal(data);
+      } else {
+        this.closeModal();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.genererHeures();
@@ -54,19 +69,23 @@ export class AddEditCarpoolingModal implements OnInit {
       vehicleChoice: ['personal', Validators.required],
       carId: [null, Validators.required],
     });
-    this.carpoolingForm.get('vehicleChoice')?.valueChanges.subscribe(choice => {
-      if (choice === 'personal') {
-        const personalCar = this.userPersonalCars()[0];
-        this.carpoolingForm.get('carId')?.setValue(personalCar ? personalCar.id : null);
-      } else {
-        this.carpoolingForm.get('carId')?.reset(null);
-      }
-    });
+    this.carpoolingForm
+      .get('vehicleChoice')
+      ?.valueChanges.subscribe((choice) => {
+        if (choice === 'personal') {
+          const personalCar = this.userPersonalCars()[0];
+          this.carpoolingForm
+            .get('carId')
+            ?.setValue(personalCar ? personalCar.id : null);
+        } else {
+          this.carpoolingForm.get('carId')?.reset(null);
+        }
+      });
   }
 
- openModal(tripData?: Partial<Trip>) {
+  openModal(tripData?: Partial<Trip>) {
     this.carpoolingForm.reset();
-    
+
     let dataForForm: any = {};
 
     if (tripData && tripData.id) {
@@ -77,20 +96,27 @@ export class AddEditCarpoolingModal implements OnInit {
 
       dataForForm = { ...tripData };
       if (tripData.car) {
-        dataForForm.vehicleChoice = (tripData.car.type === TypeVehicule.VOITURE_SERVICE) ? 'service' : 'personal';
+        dataForForm.vehicleChoice =
+          tripData.car.type === TypeVehicule.VOITURE_SERVICE
+            ? 'service'
+            : 'personal';
       } else {
         dataForForm.vehicleChoice = 'personal';
       }
 
       this.carpoolingForm.patchValue(dataForForm);
-      
-      setTimeout(() => {
-        this.carpoolingForm.get('carId')?.setValue(tripData.carId ? Number(tripData.carId) : null);
-        this.cdr.detectChanges(); 
-        
-        console.log("Valeur du carId patchée dans le setTimeout:", this.carpoolingForm.get('carId')?.value);
-      }, 0);
 
+      setTimeout(() => {
+        this.carpoolingForm
+          .get('carId')
+          ?.setValue(tripData.carId ? Number(tripData.carId) : null);
+        this.cdr.detectChanges();
+
+        console.log(
+          'Valeur du carId patchée dans le setTimeout:',
+          this.carpoolingForm.get('carId')?.value
+        );
+      }, 0);
     } else {
       // === MODE AJOUT ===
       this.isEditMode = false;
@@ -100,24 +126,34 @@ export class AddEditCarpoolingModal implements OnInit {
       dataForForm = {
         heureDepart: '09:00',
         vehicleChoice: 'personal',
-        ...tripData
+        ...tripData,
       };
-      
+
       this.carpoolingForm.patchValue(dataForForm);
     }
-    
+
     this.myDialog.nativeElement.showModal();
   }
 
   closeModal() {
-    this.myDialog.nativeElement.close();
+    if (this.myDialog?.nativeElement.open) {
+      this.myDialog.nativeElement.close();
+      this.closed.emit();
+      this.carpoolingForm.reset();
+    }
+  }
+  onDialogClose() {
     this.closed.emit();
-    this.carpoolingForm.reset();
   }
 
-save() {
+  save() {
     if (this.carpoolingForm.invalid) {
-      console.error('Formulaire invalide. État du formulaire:', this.carpoolingForm.errors, 'Valeurs:', this.carpoolingForm.value);
+      console.error(
+        'Formulaire invalide. État du formulaire:',
+        this.carpoolingForm.errors,
+        'Valeurs:',
+        this.carpoolingForm.value
+      );
       this.carpoolingForm.markAllAsTouched();
       return;
     }
@@ -126,8 +162,11 @@ save() {
     const organisateurIdFinal = this.organisateurId;
 
     if (!formValues.carId || !organisateurIdFinal) {
-        console.error("Erreur critique: carId ou organisateurId est manquant.", { carId: formValues.carId, organisateurId: organisateurIdFinal });
-        return;
+      console.error('Erreur critique: carId ou organisateurId est manquant.', {
+        carId: formValues.carId,
+        organisateurId: organisateurIdFinal,
+      });
+      return;
     }
 
     const tripPayload: RequestTrip = {
@@ -149,7 +188,11 @@ save() {
           this.saved.emit(updatedTrip);
           this.closeModal();
         },
-        error: (err) => console.error('Erreur du backend lors de la mise à jour du trajet :', err)
+        error: (err) =>
+          console.error(
+            'Erreur du backend lors de la mise à jour du trajet :',
+            err
+          ),
       });
     } else {
       this.tripService.createTrip(tripPayload).subscribe({
@@ -158,10 +201,14 @@ save() {
           this.saved.emit(newTrip);
           this.closeModal();
         },
-        error: (err) => console.error('Erreur du backend lors de la création du trajet :', err)
+        error: (err) =>
+          console.error(
+            'Erreur du backend lors de la création du trajet :',
+            err
+          ),
       });
     }
-}
+  }
 
   genererHeures() {
     for (let i = 0; i < 24; i++) {

@@ -2,8 +2,10 @@ import {
   Component,
   input,
   OnChanges,
+  signal,
   SimpleChanges,
   ViewChild,
+  WritableSignal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EMPTY, forkJoin, Observable, tap } from 'rxjs'; // On garde forkJoin pour la robustesse future
@@ -48,22 +50,21 @@ export interface DisplayItem {
   },
 })
 export class NextCarpools implements OnChanges {
-  @ViewChild('addEditModal') addEditModal!: AddEditCarpoolingModal;
   @ViewChild(DeleteConfirmationModal) deleteModal!: DeleteConfirmationModal;
   @ViewChild('carDetailsModal') carDetailsModal!: CarpoolingDetailsModal;
 
   // --- PROPRIÉTÉS REÇUES DU PARENT ---
   currentUser = input<User | null>();
   userPersonalCars = input<Car[]>([]);
-  upcomingReservations = input<Reservation[]>([]);
 
-  // --- PROPRIÉTÉS POUR L'AFFICHAGE ---
+  // --- PROPRIÉTÉS POUR LES DONNEES ET L'AFFICHAGE ---
+  serviceReservations: Reservation[] = [];
   private allItems: DisplayItem[] = [];
   displayItems: (DisplayItem | null)[] = [];
   readonly ROWS_TO_DISPLAY = 5;
-
-  // Propriété pour stocker l'item en attente de suppression
   private itemToDelete: DisplayItem | null = null;
+  private isLoading = false;
+  modalData: WritableSignal<Partial<Trip> | null> = signal(null);
 
   constructor(
     private tripService: TripService,
@@ -76,25 +77,40 @@ export class NextCarpools implements OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     const user = this.currentUser();
-    if (user && (changes['currentUser'] || changes['upcomingReservations'])) {
-      this.loadUpcomingTripsAndCombine(user.id);
+    if (user && changes['currentUser']) {
+      this.refreshAllData(user.id);
     } else if (!user) {
       this.allItems = [];
+      this.serviceReservations = [];
       this.prepareDisplayData();
     }
   }
 
   /**
-   * Charge les trajets de l'utilisateur ET combine immédiatement avec les réservations reçues.
+   * Méthode centrale pour rafraîchir toutes les données.
    */
-  loadUpcomingTripsAndCombine(userId: number): void {
-    this.tripService.getUpcomingTrip(userId).subscribe({
-      next: (trips) => {
-        this.combineAndSortAllItems(trips, this.upcomingReservations());
+  refreshAllData(userId: number): void {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    console.log(
+      "[NextCarpools] Chargement de toutes les données pour l'utilisateur ID:",
+      userId
+    );
+
+    forkJoin({
+      trips: this.tripService.getUpcomingTrip(userId),
+      reservations:
+        this.reservationService.getUpcomingReservationsByUserId(userId),
+    }).subscribe({
+      next: ({ trips, reservations }) => {
+        console.log('[NextCarpools] Données reçues :', { trips, reservations });
+        this.serviceReservations = reservations;
+        this.combineAndSortAllItems(trips, reservations);
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Erreur lors du chargement des trajets :', err);
-        this.combineAndSortAllItems([], this.upcomingReservations());
+        console.error('Erreur lors du chargement des données combinées :', err);
+        this.isLoading = false;
       },
     });
   }
@@ -148,30 +164,26 @@ export class NextCarpools implements OnChanges {
     this.displayItems = [...realData, ...placeholders];
   }
 
-  /**
-   * Ouvre la modale pour AJOUTER un NOUVEAU trajet.
-   */
   openModalAdd() {
     const user = this.currentUser();
     if (!user) return;
-    const defaultTripData = { organisateurId: user.id };
-    this.addEditModal.userPersonalCars = this.userPersonalCars;
-    this.addEditModal.userCompanyCarReservations = this.upcomingReservations;
-    this.addEditModal.openModal(defaultTripData);
+    this.modalData.set({ organisateurId: user.id });
   }
 
   openModalEdit(item: DisplayItem) {
     if (item.type === 'TRIP') {
-      this.addEditModal.userPersonalCars = this.userPersonalCars;
-      this.addEditModal.userCompanyCarReservations = this.upcomingReservations;
-      this.addEditModal.openModal(item.originalData as Trip);
+      this.modalData.set(item.originalData as Trip);
     }
   }
 
-  onCarpoolSaved(savedTrip: Trip) {
+  closeModal() {
+    this.modalData.set(null);
+  }
+
+  onCarpoolSaved() {
     const user = this.currentUser();
     if (user) {
-      this.loadUpcomingTripsAndCombine(user.id);
+      this.refreshAllData(user.id);
     }
   }
 
@@ -213,11 +225,13 @@ export class NextCarpools implements OnChanges {
 
     const user = this.currentUser();
     if (!user) return;
-    
+
     let deleteAction$: Observable<any>;
     const item = this.itemToDelete;
-    
-    const isOrganizer = item.type === 'TRIP' && (item.originalData as Trip).organisateurId === user.id;
+
+    const isOrganizer =
+      item.type === 'TRIP' &&
+      (item.originalData as Trip).organisateurId === user.id;
 
     if (item.type === 'TRIP') {
       if (isOrganizer) {
@@ -225,8 +239,8 @@ export class NextCarpools implements OnChanges {
         deleteAction$ = this.tripService.deleteTrip(item.id);
       } else {
         // L'utilisateur est participant, il se desinscrit
-        deleteAction$ = this.subscribeService.delete( user.id,item.id);
-        console.log("Logique de désinscription à implémenter.");
+        deleteAction$ = this.subscribeService.delete(user.id, item.id);
+        console.log('Logique de désinscription à implémenter.');
       }
     } else if (item.type === 'RESERVATION') {
       // L'utilisateur supprime sa réservation de véhicule de service
@@ -235,20 +249,19 @@ export class NextCarpools implements OnChanges {
       deleteAction$ = EMPTY; // Ne devrait jamais arriver
     }
 
-    // On s'abonne à l'action de suppression choisie
-    deleteAction$.pipe(
-      // Le tap est juste pour le log, il n'affecte pas le flux
-      tap(() => console.log(`Suppression réussie pour l'item ${item.id} de type ${item.type}`))
-    ).subscribe({
+    deleteAction$.subscribe({
       next: () => {
-        // Après la suppression, on recharge toutes les données pour rafraîchir la liste
-        this.loadUpcomingTripsAndCombine(user.id);
+        this.refreshAllData(user.id);
       },
-      error: (err) => console.error(`Erreur lors de la suppression de l'item ${item.id}`, err),
+      error: (err) =>
+        console.error(
+          `Erreur lors de la suppression de l'item ${item.id}`,
+          err
+        ),
       complete: () => {
         // On nettoie l'item en attente
-        this.itemToDelete = null; 
-      }
+        this.itemToDelete = null;
+      },
     });
   }
 

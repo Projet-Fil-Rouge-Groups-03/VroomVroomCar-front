@@ -101,8 +101,11 @@
 
 <!-- Modale d'ajout / d'edition -->
 <app-add-edit-carpooling-modal
-  #addEditModal
-  (saved)="onCarpoolSaved($event)"
+  [dataToEdit]="modalData()"
+  [userPersonalCars]="userPersonalCars()"
+  [userCompanyCarReservations]="serviceReservations"
+  (saved)="onCarpoolSaved()"
+  (closed)="closeModal()"
 ></app-add-edit-carpooling-modal>
 
 <!-- Modale de suppression -->
