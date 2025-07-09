@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, inject, input, OnDestroy, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { Subscribe } from '../../../core/models/subscribe.model';
 import { Subject } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
   templateUrl: './modal-participants-informations.html',
   styleUrl: './modal-participants-informations.css'
 })
-export class ModalParticipantsInformations implements OnDestroy {
+export class ModalParticipantsInformations{
   participants = input<Subscribe[] | undefined>();
 
   participantNames = computed<string[]>(() => {
@@ -26,8 +26,4 @@ export class ModalParticipantsInformations implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor() {}
-  
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
-  }
 }
