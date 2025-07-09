@@ -8,9 +8,8 @@
   <app-next-carpools
     [currentUser]="user"
     [userPersonalCars]="userPersonalCars"
-    >></app-next-carpools
-  >
-  <app-notifications></app-notifications>
+    ></app-next-carpools>
+  <app-notifications [user]="user"></app-notifications>
   <app-informations [user]="user"></app-informations>
   <app-old-carpools></app-old-carpools>
 </div>

@@ -1,4 +1,5 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, effect, input } from '@angular/core';
+import { Car } from '../../../core/models/car.model';
 
 @Component({
   selector: 'app-modal-car-informations',
@@ -8,11 +9,23 @@ import { Component, input } from '@angular/core';
 })
 export class ModalCarInformations {
 
-  marque = input<string>('Toyota');
-  modele = input<string>('Yaris');
-  nbDePlaces = input<string>('');
-  motorisation = input<string>('Hybride');
-  categorie = input<string>('Citadine Polyvalente');
-  pollution = input<string>('9.02 CO²/km');
+  car = input<Car | undefined>();
 
+  marque = computed(() => this.car()?.marque ?? 'Marque inconnue');
+  modele = computed(() => this.car()?.modele ?? 'Modèle inconnu');
+  nbDePlaces = computed(() => this.car()?.nbDePlaces ?? 0); 
+  motorisation = computed(() => this.car()?.motorisation ?? 'Motorisation inconnue');
+  categorie = computed(() => this.car()?.categorie ?? 'Catégorie inconnue');
+  pollution = computed(() => this.car()?.pollution ?? 'Pollution inconnue');
+
+  constructor() {
+    effect(() => {
+      const currentCar = this.car();
+      if (currentCar) {
+        console.log('ModalCarInformations a reçu la voiture:', currentCar.marque, currentCar.modele);
+      } else {
+        console.log('ModalCarInformations: Pas de voiture reçue ou réinitialisée.');
+      }
+    });
+  }
 }
