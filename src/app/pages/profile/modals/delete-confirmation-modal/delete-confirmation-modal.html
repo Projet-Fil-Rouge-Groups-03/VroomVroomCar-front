@@ -1,1 +1,23 @@
-<p>delete-confirmation-modal works!</p>
+<dialog #deleteDialog class="modal-details">
+  <div class="p-6 text-center">
+    
+    <!-- Titre dynamique -->
+    <h2 class="text-xl font-semibold mb-4">{{ title }}</h2>
+    
+    <!-- Avertissement optionnel -->
+    @if (warningMessage) {
+      <p class="text-sm text-gray-500 mb-6">{{ warningMessage }}</p>
+    }
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-center gap-4">
+      <button type="button" class="btn-modal-secondary" (click)="close()">
+        Annuler
+      </button>
+      <button type="button" class="btn-modal-danger" (click)="onConfirm()">
+        Valider
+      </button>
+    </div>
+
+  </div>
+</dialog>

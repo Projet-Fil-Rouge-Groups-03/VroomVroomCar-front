@@ -47,6 +47,16 @@ export class ReservationService {
     return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}`);
   }
 
+  // Get /user/{userId}/upcoming
+    getUpcomingReservationsByUserId(userId: number): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}/upcoming`);
+  }
+  
+  // Get /user/{userId}/past
+    getPastReservationsByUserId(userId: number): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.apiUrl}/user/${userId}/past`);
+  }
+
   // PUT /update/{id}
   updateReservation(id: number, request: ReservationRequest): Observable<Reservation> {
     return this.http.put<Reservation>(`${this.apiUrl}/update/${id}`, request, { withCredentials: true });
