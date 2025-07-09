@@ -14,6 +14,7 @@ export class Notifications {
   notifications!: Notification[];
   visibleCount = 5;
   visibleNotifications!: Notification[];
+  missingLines!: number[];
   constructor(private notificationService: NotificationService){}
 
   ngOnInit(){
@@ -23,6 +24,7 @@ export class Notifications {
         console.log("length : " + notifications.length)
         if(notifications.length >= this.visibleCount) this.visibleNotifications = notifications.slice(0, this.visibleCount);
         else this.visibleNotifications = notifications;
+        this.missingLines = Array.from({length: 5-this.visibleNotifications.length})
       },
     })
   }
@@ -36,6 +38,8 @@ export class Notifications {
     }
     console.log('previous value : ' + previousCount + "\nnew value : " +this.visibleCount + "\nnotifications length : " + this.notifications.length)
     this.visibleNotifications = this.notifications.slice(previousCount, this.visibleCount);
+    this.missingLines = Array.from({length: 5-this.visibleNotifications.length})
+    console.log('missing lines :' + this.missingLines.length)
   }
 
 }

@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { RequestTrip, Trip } from '../models/trip.model';
 import { VehiculeType } from '../models/company-car.model';
+import { Page } from '../models/pagination.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,11 @@ export class TripService {
     return this.http.post<Trip>(`${this.apiURL}/create`, trip);
   }
   // Read Trip (GET)
-  getAllTrips(): Observable<Trip[]>{
-    return this.http.get<Trip[]>(this.apiURL);
+  getAllTrips(page: number, size: number): Observable<Page<Trip>>{
+    const params = new HttpParams()
+    .set('page', page)
+    .set('size', size);
+    return this.http.get<Page<Trip>>(this.apiURL, { params });
   }
   getTripById(id : number) : Observable<Trip>{
     return this.http.get<Trip>(`${this.apiURL}/${id}`);

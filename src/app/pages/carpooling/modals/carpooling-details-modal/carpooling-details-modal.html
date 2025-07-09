@@ -34,7 +34,7 @@ class="relative modal-details"
     <div class="flex justify-end pr-4 space-x-8">
         <button class="btn-modal" (click)="closeModal()">Annuler</button>
         @if (mode() === 'booking') {
-          <button class="btn-modal">Réserver</button>
+          <button class="btn-modal" (click)="addSubscribe()">Réserver</button>
         }
     </div>
   </div>

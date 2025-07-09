@@ -1,20 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  OnDestroy,
-  output,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import { ModalParticipantsInformations } from '../../../../shared/components/modal-participants-informations/modal-participants-informations';
 import { ModalCarInformations } from '../../../../shared/components/modal-car-informations/modal-car-informations';
 import { Trip } from '../../../../core/models/trip.model';
 import { Car } from '../../../../core/models/car.model';
-import { Subscribe } from '../../../../core/models/subscribe.model';
+import { Subscribe, SubscribeRequest } from '../../../../core/models/subscribe.model';
 import { SubscribeService } from '../../../../core/services/subscribe';
 import { Subject, takeUntil } from 'rxjs';
 import { Reservation } from '../../../../core/models/reservation.model';
@@ -74,6 +63,21 @@ export class CarpoolingDetailsModal implements OnDestroy {
     this.destroy$.complete();
   }
 
+  // === BOUTON RESERVATION (non fini)===
+  addSubscribe() {
+    // const currentTrip = this.tripDetails();
+    // if (currentTrip?.id) {
+    //   if(this.subscribeService.findByTrip(currentTrip.id)){
+    //     const subscribeRequest : SubscribeRequest = {
+    //       userId = ,
+    //       tripId = this.currentTrip.id,
+    //     };
+    //     this.subscribeService.create(requestSubscribe);
+    //   }
+    // }
+  }
+
+  // === OUVERTURE / FERMETURE DE LA MODALE ===
   closed = output<void>();
 
 openModal() {
