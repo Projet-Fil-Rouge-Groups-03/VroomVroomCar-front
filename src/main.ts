@@ -8,7 +8,8 @@ meta.httpEquiv = 'Content-Security-Policy';
 meta.content = `
   default-src 'self';
   script-src 'self';
-  style-src 'self';
+  style-src 'self' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
   img-src 'self' data: https:;
   connect-src 'self' ${environment.apiUrl};
 `;
