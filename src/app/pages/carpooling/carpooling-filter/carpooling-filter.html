@@ -16,8 +16,8 @@
       <input type="text" id="villeArrivee" name="villeArrivee" formControlName="villeArrivee" placeholder="Ville d'arrivée" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
     </div>
     <div class="flex gap-2 items-center mb-3">
-      <label for="dateDepart" class="text-sm w-8 flex-shrink-0">Le :</label>
-      <input type="date" id="dateDepart" name="dateDebutStr" formControlName="dateDebutStr" class="input-small text-sm flex-1 min-w-0" />
+      <label for="dateDebut" class="text-sm w-8 flex-shrink-0">Le :</label>
+      <input type="date" id="dateDebut" name="dateDebutStr" formControlName="dateDebutStr" [min]="today" class="input-small text-sm flex-1 min-w-0" />
     </div>
     <div class="flex gap-2 items-center mb-4">
       <label for="heureDepart" class="text-sm w-22 flex-shrink-0">À partir de :</label>
