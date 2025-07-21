@@ -10,27 +10,23 @@
     </tr>
   </thead>
   <tbody>
-    @for(notification of this.visibleNotifications; track notification){
-        <tr>
-            <td>{{ notification.nom }}</td>
-            <td>{{ notification.date }}</td>
-            <td>{{ notification.contenu }}</td>
-        </tr>
-    }
-    @if(visibleNotifications.length<5){
-      @for(i of missingLines; track i){
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-      }
-    }
+    @for(notification of visibleNotifications; track notification ?
+    notification.id : $index) { @if (notification) {
+    <tr>
+      <td>{{ notification.nom }}</td>
+      <td>{{ notification.date }}</td>
+      <td>{{ notification.contenu }}</td>
+    </tr>
+    } @else {
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    } }
   </tbody>
 </table>
 
-
 @if (notifications.length > visibleCount) {
-  <button class="btn-primary mx-auto my-4" (click)="loadMore()">Voir plus</button>
+<button class="btn-primary mx-auto my-4" (click)="loadMore()">Voir plus</button>
 }
-  

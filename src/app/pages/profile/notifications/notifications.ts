@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { NotificationService } from '../../../core/services/notification';
 import { Notification } from '../../../core/models/notification.model';
 import { User } from '../../../core/models/user.model';
@@ -9,12 +9,12 @@ import { User } from '../../../core/models/user.model';
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })
-export class Notifications {
+export class Notifications implements OnInit {
   user= input<User | null>();
-  notifications!: Notification[];
+  notifications: Notification[] = [];
   visibleCount = 5;
-  visibleNotifications!: Notification[];
-  missingLines!: number[];
+  visibleNotifications: (Notification | null)[] = [];
+  readonly ROWS_TO_DISPLAY = 5;
   constructor(private notificationService: NotificationService){}
 
   ngOnInit(){
@@ -22,11 +22,18 @@ export class Notifications {
       next: (notifications) => {
         this.notifications = notifications;
         console.log("length : " + notifications.length)
-        if(notifications.length >= this.visibleCount) this.visibleNotifications = notifications.slice(0, this.visibleCount);
-        else this.visibleNotifications = notifications;
-        this.missingLines = Array.from({length: 5-this.visibleNotifications.length})
+        this.prepareDisplayData();
       },
     })
+  }
+
+  prepareDisplayData(): void {
+    const realData = this.notifications.slice(0, this.visibleCount);
+    const placeholdersNeeded = this.ROWS_TO_DISPLAY - realData.length;
+    const placeholders = Array(
+      placeholdersNeeded > 0 ? placeholdersNeeded : 0
+    ).fill(null);
+    this.visibleNotifications = [...realData, ...placeholders];
   }
 
   loadMore() {
@@ -37,9 +44,7 @@ export class Notifications {
       this.visibleCount = this.notifications.length
     }
     console.log('previous value : ' + previousCount + "\nnew value : " +this.visibleCount + "\nnotifications length : " + this.notifications.length)
-    this.visibleNotifications = this.notifications.slice(previousCount, this.visibleCount);
-    this.missingLines = Array.from({length: 5-this.visibleNotifications.length})
-    console.log('missing lines :' + this.missingLines.length)
+    this.prepareDisplayData();
   }
 
 }
