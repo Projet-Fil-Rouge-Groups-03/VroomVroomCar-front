@@ -1,4 +1,4 @@
-<form [formGroup]="filterForm"
+<form [formGroup]="filterForm" (ngSubmit)="applyFilters()"
       [ngClass]="{
         'hidden': !isVisible(), 
         'flex': isVisible()
@@ -22,7 +22,9 @@
     <div class="flex gap-2 items-center mb-4">
       <label for="heureDepart" class="text-sm w-22 flex-shrink-0">À partir de :</label>
       <select id="heureDepart" name="heureDepart" formControlName="heureDepart" class="input-small px-0.5 flex-1 min-w-0 text-sm">
-          <option>00:00</option>
+        @for (hour of hours; track hour) {
+            <option [value]="hour">{{ hour }}</option>
+        }
       </select>
     </div>
     

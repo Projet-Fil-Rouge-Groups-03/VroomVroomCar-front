@@ -50,9 +50,13 @@
   </div>
 
   <div class="flex bg-green p-1 px-4 items-center justify-between">
-    <!-- ou "assets/images/VS.svg" si c'est une voiture de service -->
     <div class="flex items-center gap-2">
-      <img src="assets/images/covoit.svg" class="h-10" />
+      @if (car()?.type == 'VOITURE_SERVICE') {
+        <img src="assets/images/VS.svg" class="h-10" />
+      }
+      @else {
+        <img src="assets/images/covoit.svg" class="h-10" />
+      }
       <img src="assets/icons/avatar.svg" alt="avatar" class="h-8 pl-6" />
       <p>{{organizer()}}</p>
     </div>

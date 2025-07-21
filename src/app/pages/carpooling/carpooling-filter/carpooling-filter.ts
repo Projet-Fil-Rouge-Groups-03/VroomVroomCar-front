@@ -14,6 +14,7 @@ export class CarpoolingFilter implements OnInit {
 
   filterForm!: FormGroup;
   today: string;
+  hours: string[] = [];
 
   readonly VEHICULE_SERVICE = 'VOITURE_SERVICE';
   readonly VEHICULE_COVOIT = 'VOITURE_COVOIT';
@@ -25,20 +26,34 @@ export class CarpoolingFilter implements OnInit {
   }
 
   ngOnInit(): void {
+    this.generateHours();
     this.filterForm = this.fb.group({
       villeDepart: [''],
       villeArrivee: [''],
       dateDebutStr: [this.today],
-      heureDepart: ['00:00'],
+      heureDepart: ['06:00'],
       typeVehicule: [this.VEHICULE_TOUS], 
     });
-    
-    this.filterForm.valueChanges.pipe(
-      debounceTime(400),
-      distinctUntilChanged()
-    ).subscribe(newValues => {
-      this.search.emit(newValues);
-    });
+  }
+
+  applyFilters(): void {
+    const formValues = this.filterForm.value;
+
+    const payload = {
+      ...formValues,
+      heureDepart: formValues.heureDepart ? `${formValues.heureDepart}:00` : null
+    };
+
+    console.log("Clic sur Filtrer, émission du payload :", payload);
+    this.search.emit(payload);
+  }
+
+
+    generateHours() {
+    for (let i = 0; i < 24; i++) {
+      const hour = i.toString().padStart(2, '0');
+      this.hours.push(`${hour}:00`);
+    }
   }
 
 }
