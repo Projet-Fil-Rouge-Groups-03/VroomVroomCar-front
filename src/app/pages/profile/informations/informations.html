@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
     <h3>Informations Personnelles</h3>
     <div class="border border-black rounded-md">
         <div class="grid grid-cols-2 gap-4 ">
@@ -61,4 +61,126 @@
         </div>
         <button class="btn-modal ml-auto block">Modifier</button>
     </div>
+</div> -->
+
+<h2 class="pb-1">Informations Personnelles</h2>
+<div class="border-2 border-gray-700 rounded-lg p-2">
+  <!-- Partie user -->
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 py-4">
+    <!-- partie user gauche -->
+    <div class="">
+      <div class="flex justify-evenly items-center">
+        <img src="assets/icons/avatar.svg" alt="Avatar" class="w-28" />
+        <div class="flex flex-col gap-4">
+          <div class="flex gap-2 xl:gap-4 justify-end items-center">
+            <label class="block text-sm mb-1">Nom </label>
+            <input class="input-small w-2/3 border-2" />
+          </div>
+          <div class="flex gap-2 xl:gap-4 justify-end items-center">
+            <label class="block text-sm mb-1">Prénom </label>
+            <input class="input-small w-2/3 border-2" />
+          </div>
+        </div>
+      </div>
+      <label class="block text-sm mb-1"
+        >Mail
+        <input class="input-small w-full border-2" />
+      </label>
+    </div>
+
+    <!-- partie user droite -->
+    <div>
+      <fieldset>
+        <label class="font-medium"> Adresse </label>
+        <label class="block text-sm mb-1"
+          >Libelle
+          <input class="input-small w-full border-2" />
+        </label>
+        <div class="flex gap-4">
+          <label class="block text-sm mb-1"
+            >Ville
+            <input class="input-small w-full border-2" />
+          </label>
+          <label class="block text-sm mb-1 max-w-24"
+            >Code postal
+            <input class="input-small w-full border-2" />
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- Partie User's Car -->
+  <fieldset class="field bg-white">
+    <div class="flex items-center gap-2">
+      <input
+        type="checkbox"
+        id="ajouterVehicule"
+        formControlName="ajouterVehicule"
+        class="h-4 w-4 rounded"
+      />
+      <label for="ajouterVehicule" class="font-medium"
+        >Ajouter/Modifier mon véhicule</label
+      >
+    </div>
+
+    <div
+      formGroupName="vehicule"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2"
+    >
+      <!-- partie vehicule gauche -->
+      <div class="grid grid-cols-2 gap-4">
+        <label class="block text-sm mb-1"
+          >Marque
+          <input class="input-small w-full border-2" />
+        </label>
+        <label class="block text-sm mb-1"
+          >Modèle
+          <input class="input-small w-full border-2" />
+        </label>
+        <label class="block text-sm mb-1"
+          >Motorisation
+          <input class="input-small w-full border-2" />
+        </label>
+        <label class="block text-sm mb-1"
+          >Places rest.
+          <input class="input-small w-full border-2" />
+        </label>
+      </div>
+      <div>
+        
+        <!-- partie vehicule droite -->
+        <div>
+          <label for="categorie" class="block text-sm mb-1">
+            Catégorie
+            <!-- @if (registerForm.get('ajouterVehicule')?.value) {
+                  <span class="text-red-500">*</span>
+                } -->
+          </label>
+          <select
+            id="categorie"
+            formControlName="categorie"
+            class="input-small w-full border-2"
+          >
+            <option value="" disabled>Sélectionner...</option>
+            <!-- @for (cat of categories; track $index) {
+                <option [value]="cat"></option>
+              } -->
+          </select>
+        </div>
+        <div>
+          <label for="infosSupp" class="block text-sm my-1"
+            >Infos supplémentaires (optionnel)</label
+          >
+          <textarea
+            id="infosSupp"
+            formControlName="infosSupp"
+            class="input-small border-2 w-full resize-none placeholder-gray-400 placeholder:text-sm"
+            rows="3"
+            placeholder="Informations complémentaires sur votre véhicule..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </fieldset>
 </div>
