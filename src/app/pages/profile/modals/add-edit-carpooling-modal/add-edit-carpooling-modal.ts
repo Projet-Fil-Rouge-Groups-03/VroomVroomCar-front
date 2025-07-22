@@ -3,9 +3,11 @@ import {
   Component,
   effect,
   ElementRef,
+  HostListener,
   input,
   OnInit,
   output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import {
@@ -19,6 +21,7 @@ import { Reservation } from '../../../../core/models/reservation.model';
 import { RequestTrip, Trip } from '../../../../core/models/trip.model';
 import { TripService } from '../../../../core/services/trip';
 import { CommonModule } from '@angular/common';
+import { SubscribeService } from '../../../../core/services/subscribe';
 
 @Component({
   selector: 'app-add-edit-carpooling-modal',
@@ -30,6 +33,7 @@ export class AddEditCarpoolingModal implements OnInit {
   @ViewChild('carpoolingDetailsModal') myDialog!: ElementRef<HTMLDialogElement>;
 
   heures: string[] = [];
+  isTooltipVisible = signal(false);
   carpoolingForm!: FormGroup;
   isEditMode = false;
   dataToEdit = input<Partial<Trip> | null>(null);
@@ -37,15 +41,20 @@ export class AddEditCarpoolingModal implements OnInit {
   userCompanyCarReservations = input<Reservation[]>([]);
   closed = output<void>();
   saved = output<Trip>();
-
+  today: string;  
   currentTripId: number | null = null;
   organisateurId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
     private tripService: TripService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private readonly subscribeService: SubscribeService,
+    private elRef: ElementRef
   ) {
+    const date = new Date();
+    this.today = date.toISOString().split('T')[0];
+    
     effect(() => {
       const data = this.dataToEdit();
       if (data) {
@@ -214,6 +223,17 @@ export class AddEditCarpoolingModal implements OnInit {
     for (let i = 0; i < 24; i++) {
       const heure = i.toString().padStart(2, '0');
       this.heures.push(`${heure}:00`);
+    }
+  }
+
+  toggleTooltip(event: MouseEvent): void {
+    event.stopPropagation(); 
+    this.isTooltipVisible.update(visible => !visible);
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isTooltipVisible() && !this.elRef.nativeElement.contains(event.target)) {
+      this.isTooltipVisible.set(false);
     }
   }
 }
