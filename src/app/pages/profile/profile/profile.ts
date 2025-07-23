@@ -22,10 +22,12 @@ import { CarService } from '../../../core/services/car';
 export class Profile {
   user!: User | null;
   userPersonalCars: Car[] = [];
+  userCompanyCarReservations: Reservation[] = [];
 
   constructor(
     private authService: AuthService,
     private carService: CarService,
+    private reservationService: ReservationService
   ) {}
 
   ngOnInit() {
@@ -35,8 +37,10 @@ export class Profile {
         this.user = user;
         if (user) {
           this.loadPersonalCars(user.id);
+          this.loadCompanyCarReservations(user.id);
         } else {
           this.userPersonalCars = [];
+          this.userCompanyCarReservations = [];
         }
       },
       error: (err) => {
@@ -46,6 +50,7 @@ export class Profile {
         );
         this.user = null;
         this.userPersonalCars = [];
+        this.userCompanyCarReservations = [];
       },
     });
   }
@@ -62,4 +67,15 @@ export class Profile {
     });
   }
 
+  loadCompanyCarReservations(userId: number): void {
+    this.reservationService.getReservationsByUserId(userId).subscribe({
+      next: (reservations) => {
+        this.userCompanyCarReservations = reservations; 
+        console.log('[Profile Component] Réservations de service chargées :', this.userCompanyCarReservations);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des réservations de service :', err);
+      }
+    });
+  }
 }

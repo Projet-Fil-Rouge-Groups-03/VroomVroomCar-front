@@ -1,1 +1,114 @@
-<p>old-carpools works!</p>
+<div class="pb-1 flex justify-between items-center">
+  <h2>Mes anciens trajets</h2>
+</div>
+
+<!-- Tableau affichant les trajets -->
+<table class="table-vroom">
+  <thead>
+    <tr>
+      <th>Date et heure de départ</th>
+      <th>Départ</th>
+      <th>Arrivée</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (item of displayItems; track item ? item.id + item.type : $index) { @if
+    (item) {
+    <!-- On peut ajouter une classe pour différencier visuellement -->
+    <tr
+      class="cursor-pointer"
+      [class.reservation-row]="item.type === 'RESERVATION'"
+      (click)="openModalDetails(item)"
+    >
+      <td>
+        <div style="display: inline-block; width: 50%; text-align: left">
+          {{ item.dateDebut | date : "dd/MM/yyyy" }}
+        </div>
+        <div style="display: inline-block; width: 50%; text-align: right">
+          {{ item.heureDepart }}
+        </div>
+      </td>
+      <td>{{ item.villeDepart }}</td>
+      <td>{{ item.villeArrivee }}</td>
+
+      <!-- Affichage du Type -->
+      <td>
+        @if(item.type === 'TRIP') {
+        <span>{{
+          item.car?.type === "VOITURE_SERVICE"
+            ? "Covoit service"
+            : "Covoit perso"
+        }}</span>
+        } @else {
+        <span>Réservation service</span>
+        }
+      </td>
+    </tr>
+    } @else {
+    <!-- Cas 2 : C'est une ligne vide (l'objet est null) -->
+    <tr class="">
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+
+@if (displayItems.length > ROWS_TO_DISPLAY) {
+<button class="btn-primary mx-auto my-4">Voir plus</button>
+}
+
+<!-- Modale de details -->
+<app-carpooling-details-modal
+  #carDetailsModal
+  [mode]="'view-only'"
+  [tripDetails]="detailsModalItem()?.originalData"
+  [organizer]="getOrganizerName(detailsModalItem())"
+  (closed)="onDetailsModalClosed()"
+></app-carpooling-details-modal>
+
+
+<!--<div class="pb-1 flex justify-between items-center">
+  <h2>Mes anciens trajets</h2>
+</div>
+<table class="table-vroom">
+  <thead>
+    <tr>
+      <th>Date et heure de départ</th>
+      <th>Départ</th>
+      <th>Arrivée</th>
+      <th>Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(trip of visibleTrip; track trip){
+        <tr>
+            <td>
+                <div style="display: inline-block; width: 50%; text-align: left">
+                    {{ trip.dateDebut | date : "dd/MM/yyyy" }}
+                </div>
+                <div style="display: inline-block; width: 50%; text-align: right">
+                    {{ trip.heureDepart }}
+                </div>
+            </td>
+            <td>{{trip.villeDepart}}</td>
+            <td>{{trip.villeArrivee}}</td>
+            <td>{{trip.car?.type === 'VOITURE_SERVICE' ? 'Covoit service' : 'Covoit perso'}}</td>
+        </tr>
+    }
+    @for(item of missingLines; track item){
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    }
+  </tbody>
+</table>
+@if (trips.length > visibleCount) {
+  <button class="btn-primary mx-auto my-4" (click)="loadMore()">Voir plus</button>
+}-->
