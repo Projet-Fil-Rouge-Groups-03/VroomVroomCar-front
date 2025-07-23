@@ -36,6 +36,7 @@ export interface Car {
   categorie: CategorieVehicule;
   co2ParKm: number;
   type: TypeVehicule;
+  urlPhoto: String;
 }
 
 export interface CarRequest {

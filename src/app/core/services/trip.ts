@@ -37,16 +37,22 @@ export class TripService {
     return this.http.delete(`${this.apiURL}/delete/${tripId}`, { responseType: 'text' });
   }
   // === GET + spécifiques === //
-  searchTrips(villeDepart?: string, villeArrivee?: string, dateDebutStr?: string, heureDepart?: string, vehiculeType: VehiculeType = VehiculeType.TOUS
-  ): Observable<Trip[]> {
+  searchTrips(villeDepart?: string, villeArrivee?: string, dateDebutStr?: string, heureDepart?: string, vehiculeType: VehiculeType = VehiculeType.TOUS,  page: number = 0,
+    size: number = 5
+  ): Observable<Page<Trip>> {
     let params = new HttpParams();
     if (villeDepart) params = params.set('villeDepart', villeDepart);
     if (villeArrivee) params = params.set('villeArrivee', villeArrivee);
     if (dateDebutStr) params = params.set('dateDebutStr', dateDebutStr);
     if (heureDepart) params = params.set('heureDepart', heureDepart);
     if (vehiculeType && vehiculeType !== VehiculeType.TOUS) params = params.set('vehiculeType', vehiculeType);
-    return this.http.get<Trip[]>(`${this.apiURL}/search`, { params });
+
+    params = params.set('page', page.toString());
+    params = params.set('size', size.toString());
+    
+    return this.http.get<Page<Trip>>(`${this.apiURL}/search`, { params });
   }
+
   getUpcomingTrip(userId : number): Observable<Trip[]>{
     return this.http.get<Trip[]>(`${this.apiURL}/upcoming/${userId}`);
   }
