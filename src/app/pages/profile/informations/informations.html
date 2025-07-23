@@ -1,110 +1,46 @@
-<!-- <div>
-    <h3>Informations Personnelles</h3>
-    <div class="border border-black rounded-md">
-        <div class="grid grid-cols-2 gap-4 ">
-            <div class="grid cols-2 gap-4">
-                <div>
-                    <img src="assets/icons/avatar.svg" alt="Avatar"></div>
-                <div>
-                    <label>Nom</label>
-                    <p class="border border-green-rounded">{{user()?.nom}}</p>
-                    <label>Prenom</label>
-                    <p class="border border-green-rounded">{{user()?.prenom}}</p>
-                </div>
-                <div class="col-span-2">
-                    <label>Mail</label>
-                    <p class="border border-green-rounded">{{user()?.mail}}</p>
-                </div>
-            </div>
-            <div class="grid cols-2 gap-4">
-                <div class="col-span-2">
-                    <h2>Adresse</h2><br>
-                    <label>Libelle</label>
-                    <p class="border border-green-rounded">{{user()?.libelle}}</p>
-                </div>
-                <div>
-                    <label>Ville</label>
-                    <p class="border border-green-rounded">{{user()?.ville}}</p>
-                </div>
-                                <div>
-                    <label>Code Postal</label>
-                    <p class="border border-green-rounded">{{user()?.codePostal}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="relative border-2 border-light-orange rounded-md p-4 mt-8 grid grid-cols-4">
-            <div class="absolute -top-3 left-4 bg-white px-2">Véhicule</div>
-            <div>
-                <div>
-                    <label>Marque</label>
-                    <div class="border border-green-rounded">{{userCar?.marque}}</div>
-                </div>
-                <div>
-                    <label>Motorisation</label>
-                    <div class="border border-green-rounded">{{userCar?.motorisation}}</div>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <label>Modèle</label>
-                    <div class="border border-green-rounded">{{userCar?.modele}}</div>
-                </div>
-                <div>
-                    <label>Places Restantes</label>
-                    <div class="border border-green-rounded">{{userCar?.nbDePlaces}}</div>
-                </div>
-            </div>
-            <div class="col-span-2 flex flex-col h-full">
-                <label>Infos supp.</label>
-                <div class="flex-1 border border-green-rounded">{{userCar?.infosSupp}}</div>
-            </div>
-        </div>
-        <button class="btn-modal ml-auto block">Modifier</button>
-    </div>
-</div> -->
-
 <h2 class="pb-1">Informations Personnelles</h2>
-<div class="border-2 border-gray-700 rounded-lg p-2">
+<form [formGroup]="infoForm" (ngSubmit)="onSubmit()" novalidate>
+<div class="border-2 border-gray-700 rounded-lg p-4">
   <!-- Partie user -->
-  <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 py-4">
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-4 py-4">
     <!-- partie user gauche -->
-    <div class="">
-      <div class="flex justify-evenly items-center">
-        <img src="assets/icons/avatar.svg" alt="Avatar" class="w-28" />
-        <div class="flex flex-col gap-4">
-          <div class="flex gap-2 xl:gap-4 justify-end items-center">
-            <label class="block text-sm mb-1">Nom </label>
-            <input class="input-small w-2/3 border-2" />
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <img src="assets/icons/avatar.svg" alt="Avatar" class="w-24 h-24 flex-shrink-0" />
+        <div class="flex flex-col gap-3 w-full">
+          <div class="flex items-center justify-between">
+            <label for="nom" class="w-1/5 text-sm">Nom</label>
+            <input id="nom" formControlName="nom" class="input-small w-3/4 md:w-3/5" />
           </div>
-          <div class="flex gap-2 xl:gap-4 justify-end items-center">
-            <label class="block text-sm mb-1">Prénom </label>
-            <input class="input-small w-2/3 border-2" />
+          <div class="flex items-center justify-between">
+            <label for="prenom" class="w-1/5 text-sm">Prénom</label>
+            <input id="prenom" formControlName="prenom" class="input-small w-3/4 md:w-3/5" />
           </div>
         </div>
       </div>
-      <label class="block text-sm mb-1"
-        >Mail
-        <input class="input-small w-full border-2" />
-      </label>
+          <div class="flex items-center gap-2">
+            <label for="mail" class="">Mail</label>
+            <input id="mail" formControlName="mail" class="input-small w-full" />
+          </div>
     </div>
 
     <!-- partie user droite -->
-    <div>
+    <div class="flex flex-col justify-between">
       <fieldset>
-        <label class="font-medium"> Adresse </label>
-        <label class="block text-sm mb-1"
-          >Libelle
-          <input class="input-small w-full border-2" />
-        </label>
-        <div class="flex gap-4">
-          <label class="block text-sm mb-1"
-            >Ville
-            <input class="input-small w-full border-2" />
-          </label>
-          <label class="block text-sm mb-1 max-w-24"
-            >Code postal
-            <input class="input-small w-full border-2" />
-          </label>
+        <label class="font-medium">Adresse</label>
+        <div class="mt-2">
+          <label for="libelle" class="block text-sm mb-1">Libellé</label>
+          <input id="libelle" formControlName="libelle" class="input-small w-full" />
+        </div>
+        <div class="flex gap-4 mt-2">
+          <div class="flex-grow">
+            <label for="ville" class="block text-sm mb-1">Ville</label>
+            <input id="ville" formControlName="ville" class="input-small w-full" />
+          </div>
+          <div class="w-28 flex-shrink-0">
+            <label for="codePostal" class="block text-sm mb-1">Code postal</label>
+            <input id="codePostal" formControlName="codePostal" class="input-small w-full" />
+          </div>
         </div>
       </fieldset>
     </div>
@@ -113,74 +49,61 @@
   <!-- Partie User's Car -->
   <fieldset class="field bg-white">
     <div class="flex items-center gap-2">
-      <input
-        type="checkbox"
-        id="ajouterVehicule"
-        formControlName="ajouterVehicule"
-        class="h-4 w-4 rounded"
-      />
-      <label for="ajouterVehicule" class="font-medium"
-        >Ajouter/Modifier mon véhicule</label
-      >
+      <input type="checkbox" id="ajouterVehicule" formControlName="ajouterVehicule" class="h-4 w-4 rounded" />
+      <label for="ajouterVehicule" class="font-medium">Ajouter/Modifier mon véhicule</label>
     </div>
 
-    <div
-      formGroupName="vehicule"
-      class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2"
-    >
+    <div formGroupName="vehicule" class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 pt-2">
       <!-- partie vehicule gauche -->
       <div class="grid grid-cols-2 gap-4">
-        <label class="block text-sm mb-1"
-          >Marque
-          <input class="input-small w-full border-2" />
-        </label>
-        <label class="block text-sm mb-1"
-          >Modèle
-          <input class="input-small w-full border-2" />
-        </label>
-        <label class="block text-sm mb-1"
-          >Motorisation
-          <input class="input-small w-full border-2" />
-        </label>
-        <label class="block text-sm mb-1"
-          >Places rest.
-          <input class="input-small w-full border-2" />
-        </label>
-      </div>
-      <div>
-        
-        <!-- partie vehicule droite -->
         <div>
-          <label for="categorie" class="block text-sm mb-1">
-            Catégorie
-            <!-- @if (registerForm.get('ajouterVehicule')?.value) {
-                  <span class="text-red-500">*</span>
-                } -->
-          </label>
-          <select
-            id="categorie"
-            formControlName="categorie"
-            class="input-small w-full border-2"
-          >
+          <label for="marque" class="block text-sm mb-1">Marque</label>
+          <input id="marque" formControlName="marque" class="input-small w-full" />
+        </div>
+        <div>
+          <label for="modele" class="block text-sm mb-1">Modèle</label>
+          <input id="modele" formControlName="modele" class="input-small w-full" />
+        </div>
+        <div>
+          <label for="motorisation" class="block text-sm mb-1">Motorisation</label>
+          <select id="motorisation" formControlName="motorisation" class="input-small w-full">
             <option value="" disabled>Sélectionner...</option>
-            <!-- @for (cat of categories; track $index) {
-                <option [value]="cat"></option>
-              } -->
+            @for (motor of motorisations; track $index) {
+              <option [value]="motor">{{ motor }}</option>
+            }
           </select>
         </div>
         <div>
-          <label for="infosSupp" class="block text-sm my-1"
-            >Infos supplémentaires (optionnel)</label
-          >
-          <textarea
-            id="infosSupp"
-            formControlName="infosSupp"
-            class="input-small border-2 w-full resize-none placeholder-gray-400 placeholder:text-sm"
-            rows="3"
-            placeholder="Informations complémentaires sur votre véhicule..."
-          ></textarea>
+          <label for="nbDePlaces" class="block text-sm mb-1">Nb. Places</label>
+          <input type="number" id="nbDePlaces" formControlName="nbDePlaces" class="input-small w-full" />
+        </div>
+      </div>
+      
+      <!-- partie vehicule droite -->
+      <div>
+        <div>
+          <label for="categorie" class="block text-sm mb-1">Catégorie</label>
+          <select id="categorie" formControlName="categorie" class="input-small w-full">
+            <option value="" disabled>Sélectionner...</option>
+            @for (cat of categories; track $index) {
+              <option [value]="cat">{{ cat | titlecase }}</option>
+            }
+          </select>
+        </div>
+        <div>
+          <label for="infosSupp" class="block text-sm my-1">Infos supplémentaires</label>
+          <textarea id="infosSupp" formControlName="infosSupp" class="input-small w-full resize-none" rows="3"></textarea>
         </div>
       </div>
     </div>
   </fieldset>
+  
+  <!-- Bouton de sauvegarde -->
+  <div class="flex justify-end mt-6">
+    @if (successMessage) {
+      <p class="text-green-600 mr-4 self-center">{{ successMessage }}</p>
+    }
+    <button type="submit" class="btn-modal" [disabled]="infoForm.invalid || !infoForm.dirty">Modifier</button>
+  </div>
 </div>
+</form>
