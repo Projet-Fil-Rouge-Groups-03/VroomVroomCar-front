@@ -73,12 +73,19 @@
   </div>
 
   <!-- Partie User's Car -->
-  <fieldset class="field bg-white">
-    <div class="flex items-center gap-2">
-      <input type="checkbox" id="ajouterVehicule" formControlName="ajouterVehicule" class="h-4 w-4 rounded  cursor-pointer" />
-      <label for="ajouterVehicule" class="font-medium cursor-pointer">Ajouter/Modifier mon véhicule</label>
+  <fieldset class="field">
+    <legend class="px-2 font-medium">
+        Mon véhicule
+    </legend>
+    <div class="flex justify-end items-center">
+      @if (hasCar()) {
+      <button type="button" (click)="deleteCar()" title="Supprimer le véhicule" class="shadow-sm/30 rounded-full p-0.5 cursor-pointer hover:scale-105 -my-4">
+        <p class="w-6 h-6"> 🗑️</p>
+      </button>
+    }
     </div>
     
+    @if (hasCar()) {
       <div formGroupName="vehicule" class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 pt-2">
         <!-- partie vehicule gauche -->
         <div class="grid grid-cols-2 gap-4">
@@ -114,7 +121,7 @@
           <!-- Champ Nb Places -->
           <div>
             <label for="nbDePlaces" class="block text-sm mb-1">Pl. restantes</label>
-            <input type="number" id="nbDePlaces" formControlName="nbDePlaces" class="input-small w-full" [class.border-red-500]="isVehicleFieldInvalid('nbDePlaces')" />
+            <input type="number" id="nbDePlaces" min="1" max="8" formControlName="nbDePlaces" class="input-small w-full" [class.border-red-500]="isVehicleFieldInvalid('nbDePlaces')" />
             @if (isVehicleFieldInvalid('nbDePlaces')) {
               <div class="text-red-500 text-sm mt-1">{{ getVehicleFieldError('nbDePlaces') }}</div>
             }
@@ -143,6 +150,15 @@
           </div>
         </div>
       </div>
+      } @else {
+    <!-- Cas 2 : L'utilisateur n'a pas de voiture, on affiche un bouton -->
+    <div class="text-center py-4">
+      <p class="text-gray-600 mb-4">Vous n'avez pas encore de véhicule enregistré.</p>
+      <button type="button" class="btn-primary text-sm w-38" (click)="showCarForm()">
+        Ajouter un véhicule
+      </button>
+    </div>
+  }
   </fieldset>
   
   <!-- Bouton de sauvegarde -->
@@ -150,7 +166,14 @@
     @if (successMessage) {
       <p class="text-green-600 mr-4 self-center text-center">{{ successMessage }}</p>
     }
+    <div class="flex gap-4 justify-around">
+        @if (infoForm.dirty) {
+    <button type="button" class="text-gray-500 cursor-pointer" (click)="onCancel()">
+      Annuler
+    </button>
     <button type="submit" class="btn-modal" [disabled]="infoForm.invalid || !infoForm.dirty">Modifier</button>
+  }
+    </div>
   </div>
 </div>
 </form>

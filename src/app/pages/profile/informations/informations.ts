@@ -1,6 +1,4 @@
-// Fichier: src/app/components/informations/informations.ts
-
-import { Component, input, OnInit, OnChanges, SimpleChanges, output } from '@angular/core';
+import { Component, input, OnInit, output, signal, effect } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User, UserRequest } from '../../../core/models/user.model';
@@ -17,7 +15,7 @@ import { AuthService } from '../../../core/services/auth';
   templateUrl: './informations.html',
   styleUrl: './informations.css'
 })
-export class Informations implements OnInit, OnChanges {
+export class Informations implements OnInit {
   // --- Données reçues du parent ---
   user = input<User | null>();
   userPersonalCars = input<Car[]>([]);
@@ -29,6 +27,7 @@ export class Informations implements OnInit, OnChanges {
   infoForm!: FormGroup;
   categories = Object.values(CategorieVehicule);
   motorisations = Object.values(Motorisation);
+  hasCar = signal(false);
 
   submitAttempted = false;
   successMessage = '';
@@ -40,18 +39,18 @@ export class Informations implements OnInit, OnChanges {
     private userService: UserService,
     private carService: CarService,
     private authService: AuthService
-  ) {}
+  ) {
+    effect(() => {
+      const currentUser = this.user() ?? null;
+      const userCars = this.userPersonalCars() ?? [];
+      if (this.infoForm) {
+        this.populateForm(currentUser, userCars);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.initForm();
-    this.setupConditionalValidation();
-    this.populateForm();
-  }
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.infoForm && (changes['user'] || changes['userPersonalCars'])) {
-      this.populateForm();
-    }
   }
 
   private initForm(): void {
@@ -65,22 +64,19 @@ export class Informations implements OnInit, OnChanges {
       ville: ['', [Validators.required, Validators.minLength(2)]],
 
       // Partie Véhicule
-      ajouterVehicule: [false],
       vehicule: this.fb.group({
         id: [null],
-        marque: [''],
-        modele: [''],
-        motorisation: [''],
-        nbDePlaces: [''],
-        categorie: [''],
+        marque: ['', Validators.required],
+        modele: ['', Validators.required],
+        motorisation: ['', Validators.required],
+        nbDePlaces: ['', [Validators.required, Validators.min(1), Validators.max(8)]],
+        categorie: ['', Validators.required],
         infosSupp: [''],
       }),
     });
-    this.infoForm.get('vehicule')?.disable();
   }
   
-  private populateForm(): void {
-    const currentUser = this.user();
+  private populateForm(currentUser: User | null, userCars: Car[]): void {
     if (currentUser) {
       this.infoForm.patchValue({
         nom: currentUser.nom,
@@ -89,39 +85,42 @@ export class Informations implements OnInit, OnChanges {
         libelle: currentUser.libelle,
         codePostal: currentUser.codePostal,
         ville: currentUser.ville,
-      });
+      }, { emitEvent: false });
     }
 
-    const userCar = this.userPersonalCars()[0];
+    const userCar = userCars ? userCars[0] : undefined;
     if (userCar) {
-      this.infoForm.get('ajouterVehicule')?.setValue(true, { emitEvent: false }); // emitEvent false pour éviter de redéclencher la validation
+      this.hasCar.set(true);
+      this.infoForm.get('vehicule')?.enable();
       this.infoForm.get('vehicule')?.patchValue(userCar);
     } else {
-      this.infoForm.get('ajouterVehicule')?.setValue(false, { emitEvent: false });
+      
+      this.hasCar.set(false);
+      this.infoForm.get('vehicule')?.disable();
+      this.infoForm.get('vehicule')?.reset();
     }
     this.infoForm.markAsPristine(); // Réinitialise l'état "dirty" après le pré-remplissag
   }
 
- // Logique pour activer/désactiver la validation du véhicule
-  setupConditionalValidation(): void {
-    const vehiculeForm = this.infoForm.get('vehicule') as FormGroup;
-    this.infoForm.get('ajouterVehicule')?.valueChanges.subscribe((addVehicle) => {
-        if (addVehicle) {
-            vehiculeForm.enable();
-            vehiculeForm.get('marque')?.setValidators([Validators.required, Validators.minLength(2)]);
-            vehiculeForm.get('modele')?.setValidators([Validators.required, Validators.minLength(2)]);
-            vehiculeForm.get('motorisation')?.setValidators(Validators.required);
-            vehiculeForm.get('nbDePlaces')?.setValidators([Validators.required, Validators.min(1), Validators.max(8)]);
-            vehiculeForm.get('categorie')?.setValidators(Validators.required);
-        } else {
-            vehiculeForm.disable();
-            Object.keys(vehiculeForm.controls).forEach(key => {
-                vehiculeForm.get(key)?.clearValidators();
-                vehiculeForm.get(key)?.reset();
-            });
-        }
-        vehiculeForm.updateValueAndValidity();
-    });
+  showCarForm(): void {
+    this.hasCar.set(true);
+    this.infoForm.get('vehicule')?.enable();
+  }
+
+  deleteCar(): void {
+    const carId = this.infoForm.get('vehicule.id')?.value;
+    if (carId && confirm("Êtes-vous sûr de vouloir supprimer votre véhicule ?")) {
+      this.carService.deleteCar(carId).subscribe({
+        next: () => {
+          console.log("Voiture supprimée.");
+          this.hasCar.set(false);
+          this.infoForm.get('vehicule')?.disable();
+          this.infoForm.get('vehicule')?.reset();
+          this.profileUpdated.emit();
+        },
+        error: (err) => console.error("Erreur de suppression:", err)
+      });
+    }
   }
   
   onSubmit(): void {
@@ -145,10 +144,9 @@ export class Informations implements OnInit, OnChanges {
 
     const formValue = this.infoForm.getRawValue();
 
-    // --- PRÉPARATION DES APPELS API ---
     const updateObservables = [];
 
-    // 1. Observable pour la mise à jour de l'utilisateur (si nécessaire)
+    // Observable pour la mise à jour de l'utilisateur (si nécessaire)
     const userPart = this.infoForm.get('nom')?.parent;
     if (userPart?.dirty) {
         const userRequest: UserRequest = {
@@ -167,9 +165,9 @@ export class Informations implements OnInit, OnChanges {
       updateObservables.push(userUpdate$);
     }
 
-    // 2. Observable pour la mise à jour/création de la voiture (si nécessaire)
+    // Observable pour la mise à jour/création de la voiture (si nécessaire)
     const carPart = this.infoForm.get('vehicule');
-    if (this.infoForm.get('ajouterVehicule')?.value && carPart?.dirty) {
+    if (this.hasCar() && carPart?.dirty) {
         const carData = formValue.vehicule;
         const carRequest: CarRequest = {
             id: carData.id,
@@ -183,14 +181,13 @@ export class Informations implements OnInit, OnChanges {
             utilisateurNom: `${currentUser.prenom} ${currentUser.nom}`,
         };
         
-        if (carData.id) { // Si la voiture a un ID, on la met à jour
+        if (carData.id) {
             updateObservables.push(this.carService.updateCar(carData.id, carRequest));
-        } else { // Sinon, on la crée
+        } else {
             updateObservables.push(this.carService.createCar(carRequest));
         }
     }
-    
-    // --- EXÉCUTION DES APPELS ---
+
     // Si aucun changement, on n'appelle pas forkJoin
     if (updateObservables.length === 0) {
         this.successMessage = "Aucune modification détectée.";
@@ -215,6 +212,15 @@ export class Informations implements OnInit, OnChanges {
         console.log("[Informations Component] Émission de l'événement profileUpdated.");
         this.profileUpdated.emit();
     });
+  }
+
+  // Remise à "0" du formulaire
+  onCancel(): void {
+    const currentUser = this.user() ?? null;
+    const userCars = this.userPersonalCars() ?? [];
+    this.populateForm(currentUser, userCars);
+    this.successMessage = '';
+    this.errorMessage = '';
   }
 
   // Méthodes utilitaires pour la validation dans le template
