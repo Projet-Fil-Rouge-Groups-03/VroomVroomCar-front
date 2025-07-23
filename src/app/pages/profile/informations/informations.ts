@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, signal, effect } from '@angular/core';
+import { Component, input, OnInit, output, signal, effect, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User, UserRequest } from '../../../core/models/user.model';
@@ -8,14 +8,17 @@ import { UserService } from '../../../core/services/user';
 import { CarService } from '../../../core/services/car';
 import { catchError, delay, finalize, forkJoin, of, tap } from 'rxjs';
 import { AuthService } from '../../../core/services/auth';
+import { DeleteConfirmationModal } from '../modals/delete-confirmation-modal/delete-confirmation-modal';
 
 @Component({
   selector: 'app-informations',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DeleteConfirmationModal],
   templateUrl: './informations.html',
   styleUrl: './informations.css'
 })
 export class Informations implements OnInit {
+  @ViewChild(DeleteConfirmationModal) deleteModal!: DeleteConfirmationModal;
+
   // --- Données reçues du parent ---
   user = input<User | null>();
   userPersonalCars = input<Car[]>([]);
@@ -109,16 +112,29 @@ export class Informations implements OnInit {
 
   deleteCar(): void {
     const carId = this.infoForm.get('vehicule.id')?.value;
-    if (carId && confirm("Êtes-vous sûr de vouloir supprimer votre véhicule ?")) {
+    if (carId) {
+      this.deleteModal.open(
+        "Voulez-vous vraiment supprimer votre véhicule ?",
+        "Cette action est irréversible."
+      );
+    }
+  }
+
+  onDeleteCarConfirmed(): void {
+    const carId = this.infoForm.get('vehicule.id')?.value;
+    const currentUser = this.user() ?? null;
+    const userCars = this.userPersonalCars() ?? [];
+    if (carId) {
       this.carService.deleteCar(carId).subscribe({
         next: () => {
-          console.log("Voiture supprimée.");
-          this.hasCar.set(false);
-          this.infoForm.get('vehicule')?.disable();
-          this.infoForm.get('vehicule')?.reset();
+          console.log("Voiture supprimée avec succès.");
+          this.populateForm(currentUser, userCars);
           this.profileUpdated.emit();
         },
-        error: (err) => console.error("Erreur de suppression:", err)
+        error: (err) => {
+          this.errorMessage = "Erreur lors de la suppression du véhicule.";
+          console.error("Erreur de suppression:", err);
+        }
       });
     }
   }
