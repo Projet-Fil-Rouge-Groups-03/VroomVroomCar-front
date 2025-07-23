@@ -12,7 +12,7 @@ import { DeleteConfirmationModal } from '../modals/delete-confirmation-modal/del
 
 @Component({
   selector: 'app-informations',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DeleteConfirmationModal],
   templateUrl: './informations.html',
   styleUrl: './informations.css'
 })
