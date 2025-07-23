@@ -8,39 +8,85 @@
       <div class="flex flex-col md:flex-row items-center gap-4">
         <img src="assets/icons/avatar.svg" alt="Avatar" class="w-24 h-24 flex-shrink-0" />
         <div class="flex flex-col gap-3 w-full">
-          <div class="flex items-center justify-between">
-            <label for="nom" class="w-1/5 text-sm">Nom</label>
-            <input id="nom" formControlName="nom" class="input-small w-3/4 md:w-3/5" />
-          </div>
-          <div class="flex items-center justify-between">
-            <label for="prenom" class="w-1/5 text-sm">Prénom</label>
-            <input id="prenom" formControlName="prenom" class="input-small w-3/4 md:w-3/5" />
-          </div>
+            <div>
+                <div class="flex items-center justify-between">
+                  <label for="nom" class="w-1/5 text-sm">Nom</label>
+                  <input id="nom" formControlName="nom" class="input-small w-3/4 md:w-3/5" [class.border-red-500]="isFieldInvalid('nom')" />
+                </div>
+                @if (isFieldInvalid('nom')) {
+                    <div class="text-red-500 text-sm mt-1 text-right">
+                    {{ getFieldError('nom') }}
+                    </div>
+                }
+            </div>
+            <div>
+                <div class="flex items-center justify-between">
+                  <label for="prenom" class="w-1/5 text-sm">Prénom</label>
+                  <input id="prenom" formControlName="prenom" class="input-small w-3/4 md:w-3/5" />
+                </div>
+            
+                @if (isFieldInvalid('prenom')) {
+                    <div class="text-red-500 text-sm mt-1 text-right">
+                    {{ getFieldError('prenom') }}
+                    </div>
+                }
+            </div>
         </div>
       </div>
-          <div class="flex items-center gap-2">
-            <label for="mail" class="">Mail</label>
-            <input id="mail" formControlName="mail" class="input-small w-full" />
-          </div>
+        <div>
+            <div class="flex items-center gap-2">
+              <label for="mail" class="">Mail</label>
+              <input id="mail" formControlName="mail" class="input-small w-full" />
+            </div>
+            @if (isFieldInvalid('mail')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('mail') }}
+                </div>
+            }
+        </div>
     </div>
 
     <!-- partie user droite -->
     <div class="flex flex-col justify-between">
       <fieldset>
         <label class="font-medium">Adresse</label>
-        <div class="mt-2">
-          <label for="libelle" class="block text-sm mb-1">Libellé</label>
-          <input id="libelle" formControlName="libelle" class="input-small w-full" />
+         <div>
+             <div class="mt-2">
+               <label for="libelle" class="block text-sm mb-1">Libellé</label>
+               <input id="libelle" formControlName="libelle" class="input-small w-full" />
+             </div>
+        
+            @if (isFieldInvalid('libelle')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('libelle') }}
+                </div>
+            }
         </div>
         <div class="flex gap-4 mt-2">
-          <div class="flex-grow">
-            <label for="ville" class="block text-sm mb-1">Ville</label>
-            <input id="ville" formControlName="ville" class="input-small w-full" />
-          </div>
-          <div class="w-28 flex-shrink-0">
-            <label for="codePostal" class="block text-sm mb-1">Code postal</label>
-            <input id="codePostal" formControlName="codePostal" class="input-small w-full" />
-          </div>
+            <div>
+                <div class="flex-grow">
+                  <label for="ville" class="block text-sm mb-1">Ville</label>
+                  <input id="ville" formControlName="ville" class="input-small w-full" />
+                </div>
+            
+            @if (isFieldInvalid('ville')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('ville') }}
+                </div>
+            }
+        </div>
+        <div>
+            <div class="w-28 flex-shrink-0">
+              <label for="codePostal" class="block text-sm mb-1">Code postal</label>
+              <input id="codePostal" formControlName="codePostal" class="input-small w-full" />
+            </div>
+            
+            @if (isFieldInvalid('codePostal')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('Postal') }}
+                </div>
+            }
+        </div>
         </div>
       </fieldset>
     </div>
@@ -57,38 +103,78 @@
       <!-- partie vehicule gauche -->
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label for="marque" class="block text-sm mb-1">Marque</label>
-          <input id="marque" formControlName="marque" class="input-small w-full" />
-        </div>
-        <div>
-          <label for="modele" class="block text-sm mb-1">Modèle</label>
-          <input id="modele" formControlName="modele" class="input-small w-full" />
-        </div>
-        <div>
-          <label for="motorisation" class="block text-sm mb-1">Motorisation</label>
-          <select id="motorisation" formControlName="motorisation" class="input-small w-full">
-            <option value="" disabled>Sélectionner...</option>
-            @for (motor of motorisations; track $index) {
-              <option [value]="motor">{{ motor }}</option>
+            <div>
+              <label for="marque" class="block text-sm mb-1">Marque</label>
+              <input id="marque" formControlName="marque" class="input-small w-full" />
+            </div>
+            
+            @if (isFieldInvalid('marque')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('marque') }}
+                </div>
             }
-          </select>
         </div>
         <div>
-          <label for="nbDePlaces" class="block text-sm mb-1">Nb. Places</label>
-          <input type="number" id="nbDePlaces" formControlName="nbDePlaces" class="input-small w-full" />
+            <div>
+              <label for="modele" class="block text-sm mb-1">Modèle</label>
+              <input id="modele" formControlName="modele" class="input-small w-full" />
+            </div>
+            
+            @if (isFieldInvalid('modele')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('modele') }}
+                </div>
+            }
+        </div>
+        <div>
+            <div>
+              <label for="motorisation" class="block text-sm mb-1">Motorisation</label>
+              <select id="motorisation" formControlName="motorisation" class="input-small w-full">
+                <option value="" disabled>Sélectionner...</option>
+                @for (motor of motorisations; track $index) {
+                  <option [value]="motor">{{ motor }}</option>
+                }
+              </select>
+            </div>
+            
+            @if (isFieldInvalid('motorisation')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('motorisation') }}
+                </div>
+            }
+        </div>
+        <div>
+            <div>
+              <label for="nbDePlaces" class="block text-sm mb-1">Nb. Places</label>
+              <input type="number" id="nbDePlaces" formControlName="nbDePlaces" class="input-small w-full" />
+            </div>
+            
+            @if (isFieldInvalid('nbDePlaces')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('nbDePlaces') }}
+                </div>
+            }
         </div>
       </div>
       
       <!-- partie vehicule droite -->
       <div>
         <div>
-          <label for="categorie" class="block text-sm mb-1">Catégorie</label>
-          <select id="categorie" formControlName="categorie" class="input-small w-full">
-            <option value="" disabled>Sélectionner...</option>
-            @for (cat of categories; track $index) {
-              <option [value]="cat">{{ cat | titlecase }}</option>
+            <div>
+              <label for="categorie" class="block text-sm mb-1">Catégorie</label>
+              <select id="categorie" formControlName="categorie" class="input-small w-full">
+                <option value="" disabled>Sélectionner...</option>
+                @for (cat of categories; track $index) {
+                  <option [value]="cat">{{ cat | titlecase }}</option>
+                }
+              </select>
+            </div>
+            
+            @if (isFieldInvalid('categorie')) {
+                <div class="text-red-500 text-sm mt-1 text-right">
+                {{ getFieldError('categorie') }}
+                </div>
             }
-          </select>
         </div>
         <div>
           <label for="infosSupp" class="block text-sm my-1">Infos supplémentaires</label>
