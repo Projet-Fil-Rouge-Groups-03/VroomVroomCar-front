@@ -9,6 +9,7 @@ import { CategorieVehicule, Motorisation } from '../../../core/models/car.model'
 import { UserService } from '../../../core/services/user'; 
 import { CarService } from '../../../core/services/car';
 import { catchError, delay, finalize, forkJoin, of, tap } from 'rxjs';
+import { AuthService } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-informations',
@@ -37,7 +38,8 @@ export class Informations implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private carService: CarService
+    private carService: CarService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -157,7 +159,12 @@ export class Informations implements OnInit, OnChanges {
             codePostal: formValue.codePostal,
             ville: formValue.ville,
         };
-        updateObservables.push(this.userService.updateUserById(currentUser.id, userRequest));
+        const userUpdate$ = this.userService.updateUserById(currentUser.id, userRequest).pipe(
+          tap(updatedUser => {
+              this.authService.updateCurrentUser(updatedUser);
+          })
+      );
+      updateObservables.push(userUpdate$);
     }
 
     // 2. Observable pour la mise à jour/création de la voiture (si nécessaire)
