@@ -112,4 +112,12 @@ export class AuthService {
       )
       .subscribe(() => this.isRestoringSession.next(false));
   }
+
+  /**
+   * Méthode qui permet de mettre à jour l'utilisateur en mémoire. (pour affichage des mises à jour en direct)
+   */
+  public updateCurrentUser(updatedUser: User): void {
+    console.log("[AuthService] Mise à jour de l'utilisateur en mémoire.", updatedUser);
+    this.userSubject.next(updatedUser);
+  }
 }

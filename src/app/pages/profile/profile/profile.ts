@@ -34,7 +34,7 @@ export class Profile {
       next: (user) => {
         this.user = user;
         if (user) {
-          this.loadPersonalCars(user.id);
+          this.refreshUserData(user.id);
         } else {
           this.userPersonalCars = [];
         }
@@ -48,6 +48,17 @@ export class Profile {
         this.userPersonalCars = [];
       },
     });
+  }
+
+  refreshUserData(userId: number): void {
+    console.log("[Profile Component] Rafraîchissement des données de l'utilisateur...");
+    this.loadPersonalCars(userId);
+  }
+  onProfileUpdated(): void {
+    console.log("[Profile Component] Événement profileUpdated reçu de l'enfant.");
+    if (this.user) {
+      this.refreshUserData(this.user.id);
+    }
   }
 
   loadPersonalCars(userId: number): void {
