@@ -10,6 +10,6 @@
     [userPersonalCars]="userPersonalCars"
     ></app-next-carpools>
   <app-notifications [user]="user"></app-notifications>
-  <app-informations [user]="user"></app-informations>
+  <app-informations [user]="user" [userPersonalCars]="userPersonalCars" (profileUpdated)="onProfileUpdated()"></app-informations>
   <app-old-carpools></app-old-carpools>
 </div>
