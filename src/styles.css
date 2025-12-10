@@ -151,10 +151,10 @@
     filter: drop-shadow(0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25));
   }
 
-  .btn-modal:hover {
-    background-color: #96c7a8;
-    transform: scale(1.02);
-  }
+.btn-modal:not([disabled]):hover {
+  background-color: #96c7a8;
+  transform: scale(1.02);
+}
 
   /* Inputs petits */
   .input-small {
