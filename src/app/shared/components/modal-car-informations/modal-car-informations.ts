@@ -1,5 +1,6 @@
 import { Component, computed, effect, input } from '@angular/core';
 import { Car } from '../../../core/models/car.model';
+import { CompanyCar } from '../../../core/models/company-car.model';
 
 @Component({
   selector: 'app-modal-car-informations',
@@ -17,6 +18,15 @@ export class ModalCarInformations {
   motorisation = computed(() => this.car()?.motorisation ?? 'Motorisation inconnue');
   categorie = computed(() => this.car()?.categorie ?? 'Catégorie inconnue');
   pollution = computed(() => this.car()?.pollution ?? 'Pollution inconnue');
+  vehicleImageUrl = computed(() => {
+    const currentCar = this.car();
+    const photoUrl = (currentCar as CompanyCar)?.urlPhoto;
+    if (photoUrl && photoUrl.trim() !== '') {
+      return photoUrl;
+    }
+    console.log("photo compagnyCar : "+ photoUrl)
+    return '/assets/images/Car.svg';
+  });
 
   constructor() {
     effect(() => {

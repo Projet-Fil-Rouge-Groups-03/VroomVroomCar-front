@@ -1,4 +1,4 @@
-<form (ngSubmit)="applyFilters()"
+<form [formGroup]="filterForm" (ngSubmit)="applyFilters()"
       [ngClass]="{
         'hidden': !isVisible(), 
         'flex': isVisible()
@@ -9,34 +9,36 @@
   <div class="bg-white rounded-sm max-w-[90%] p-2">
     <div class="flex gap-2 items-center mb-3">
       <label for="villeDepart" class="text-sm w-8 flex-shrink-0">De :</label>
-      <input type="text" id="villeDepart" name="villeDepart" [(ngModel)]="villeDepart" placeholder="Ville de départ" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
+      <input type="text" id="villeDepart" name="villeDepart" formControlName="villeDepart" placeholder="Ville de départ" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
     </div>
     <div class="flex gap-2 items-center mb-3">
       <label for="villeArrivee" class="text-sm w-8 flex-shrink-0">À :</label>
-      <input type="text" id="villeArrivee" name="villeArrivee" [(ngModel)]="villeArrivee" placeholder="Ville d'arrivée" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
+      <input type="text" id="villeArrivee" name="villeArrivee" formControlName="villeArrivee" placeholder="Ville d'arrivée" class="input-small text-sm flex-1 min-w-0 placeholder:text-gray-400 placeholder:text-xs" />
     </div>
     <div class="flex gap-2 items-center mb-3">
-      <label for="dateDepart" class="text-sm w-8 flex-shrink-0">Le :</label>
-      <input type="date" id="dateDepart" name="dateDebutStr" [(ngModel)]="dateDebutStr" class="input-small text-sm flex-1 min-w-0" />
+      <label for="dateDebut" class="text-sm w-8 flex-shrink-0">Le :</label>
+      <input type="date" id="dateDebut" name="dateDebutStr" formControlName="dateDebutStr" [min]="today" class="input-small text-sm flex-1 min-w-0" />
     </div>
     <div class="flex gap-2 items-center mb-4">
       <label for="heureDepart" class="text-sm w-22 flex-shrink-0">À partir de :</label>
-      <select id="heureDepart" name="heureDepart" [(ngModel)]="heureDepart" class="input-small px-0.5 flex-1 min-w-0 text-sm">
-          <option>00:00</option>
+      <select id="heureDepart" name="heureDepart" formControlName="heureDepart" class="input-small px-0.5 flex-1 min-w-0 text-sm">
+        @for (hour of hours; track hour) {
+            <option [value]="hour">{{ hour }}</option>
+        }
       </select>
     </div>
     
     <div class="flex gap-2 items-center mb-2">
-        <input name="vehicule" type="radio" id="vehicule1" name="typeVehicule" [(ngModel)]="typeVehicule" class="radio-custom"/>
-        <label for="vehicule1" class="text-sm leading-tight">Vehicule de Service partagé</label>
-    </div>
-    <div class="flex gap-2 items-center mb-2">
-        <input name="vehicule" type="radio" id="vehicule2" name="typeVehicule" [(ngModel)]="typeVehicule" class="radio-custom" />
-        <label for="vehicule2" class="text-sm">Covoiturage</label>
-    </div>
-    <div class="flex gap-2 items-center">
-        <input name="vehicule" type="radio" id="vehicule3" name="typeVehicule" [(ngModel)]="typeVehicule" class="radio-custom" />
-        <label for="vehicule3" class="text-sm">Tout</label>
+          <input type="radio" id="VEHICULE_SERVICE" [value]="VEHICULE_SERVICE" formControlName="typeVehicule" class="radio-custom"/>
+          <label for="VEHICULE_SERVICE" class="text-sm leading-tight">Vehicule de Service partagé</label>
+      </div>
+      <div class="flex gap-2 items-center mb-2">
+          <input type="radio" id="VEHICULE_COVOIT" [value]="VEHICULE_COVOIT" formControlName="typeVehicule" class="radio-custom" />
+          <label for="VEHICULE_COVOIT" class="text-sm">Covoiturage</label>
+      </div>
+      <div class="flex gap-2 items-center">
+          <input type="radio" id="TOUS" [value]="VEHICULE_TOUS" formControlName="typeVehicule" class="radio-custom" />
+          <label for="TOUS" class="text-sm">Tout</label>
     </div>
   </div>
    <button type="submit" class="btn-primary my-2">Filtrer</button>

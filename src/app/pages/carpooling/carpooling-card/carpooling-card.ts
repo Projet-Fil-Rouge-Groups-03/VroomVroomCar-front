@@ -1,7 +1,7 @@
 import { Component, OnInit, input, ViewChild, computed, inject, signal, effect } from '@angular/core';
 import { CarpoolingDetailsModal } from '../modals/carpooling-details-modal/carpooling-details-modal';
 import { Trip } from '../../../core/models/trip.model';
-import { CarService } from '../../../core/services/car';
+// import { CarService } from '../../../core/services/car';
 import { Car } from '../../../core/models/car.model';
 
 @Component({
@@ -35,8 +35,9 @@ export class CarpoolingCard {
   arrivalPlace = computed(() => this.trip()?.lieuArrivee ?? 'Lieu inconnu');
 
   // Bloc CO²
-  carService = inject(CarService);
-  car = signal<Car | null>(null);
+  // carService = inject(CarService);
+  // car = signal<Car | null>(null);
+  car = computed(() => this.trip()?.car);
 
   pollution = computed(() => `${this.trip()?.pollution ?? 0}`);
 
@@ -49,21 +50,21 @@ export class CarpoolingCard {
 
   
   constructor() {
-    effect(() => {
-      const trip = this.trip();
-      const userId = trip?.organisateurId;
-      const carId = trip?.carId;
+    // effect(() => {
+    //   const trip = this.trip();
+    //   const userId = trip?.organisateurId;
+    //   const carId = trip?.carId;
 
-      if (userId && carId) {
-        this.carService.getCarsByUserId(userId).subscribe({
-          next: cars => {
-            const matchingCar = cars.find(car => car.id === carId);
-            this.car.set(matchingCar ?? null);
-          },
-          error: () => this.car.set(null)
-        });
-      }
-    });
+    //   if (userId && carId) {
+    //     this.carService.getCarsByUserId(userId).subscribe({
+    //       next: cars => {
+    //         const matchingCar = cars.find(car => car.id === carId);
+    //         this.car.set(matchingCar ?? null);
+    //       },
+    //       error: () => this.car.set(null)
+    //     });
+    //   }
+    // });
   }
 
   // --- MODAL DETAILS ---

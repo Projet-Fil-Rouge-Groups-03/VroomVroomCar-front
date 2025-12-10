@@ -8,6 +8,6 @@
         <p>{{categorie()}}</p>
         <p>{{pollution()}} CO²/km</p>
     </div>
-    <img src="/assets/images/Car.svg" alt="Voiture" class="w-auto h-32 object-cover hidden md:block" />
+    <img [src]="vehicleImageUrl()" alt="Voiture" onerror="this.src='/assets/images/Car.svg'" class="w-auto h-32 object-cover hidden md:block" />
     </div>
 </div>

@@ -278,13 +278,43 @@
     border-radius: var(--radius-sm);
   }
   .modal-details::backdrop {
-    background-color: rgba(
-      0,
-      0,
-      0,
-      0.5
-    ); /* Couleur de fond semi-transparente pour le backdrop */
+    background-color: rgba(0,0,0,0.5);
   }
+
+  /* Infos bulle */
+
+.tooltip-container {
+  @apply relative inline-block;
+  vertical-align: middle;
+}
+
+.tooltip-text {
+  @apply absolute bottom-full mb-2;
+  @apply w-52 p-2 bg-gray-800 text-white text-xs text-center rounded-md;
+  @apply opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none;
+  z-index: 10;
+  @apply left-1/2 -translate-x-1/2;
+}
+
+.tooltip-text::after {
+  content: '';
+  @apply absolute top-full left-1/2 -translate-x-1/2;
+  @apply w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-gray-800;
+}
+
+.tooltip-text.tooltip-visible {
+  @apply opacity-100 pointer-events-auto; 
+}
+
+@media (max-width: 767px) {
+  .tooltip-text {
+    @apply left-auto right-0 -translate-x-0;
+  }
+  
+  .tooltip-text::after {
+    @apply left-auto right-2 -translate-x-0;
+  }
+}
 }
 
 .page-container {

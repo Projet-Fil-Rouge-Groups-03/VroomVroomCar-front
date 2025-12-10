@@ -34,24 +34,41 @@
 
     <!-- Dates -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-      <label for="dateDebut" class="pl-1 text-sm">
-        Date début :
+      <div>
+        <label for="dateDebut" class="pl-1 text-sm block">
+          Date début :
+        </label>
         <input
           type="date"
           id="dateDebut"
           formControlName="dateDebut"
           class="input-large w-full"
+          [min]="today"
         />
-      </label>
-      <label for="dateFin" class="pl-1 text-sm">
-        Date fin :
-        <input
-          type="date"
-          id="dateFin"
-          formControlName="dateFin"
-          class="input-large w-full"
-        />
-      </label>
+      </div>
+      <div>
+          <div class="flex items-center gap-2 pl-1 mb-1">
+            <label for="dateFin" class="text-sm">
+              Date fin :
+            </label>
+            <div class="tooltip-container group" (click)="toggleTooltip($event)">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-500 cursor-help">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+              </svg>
+              <div class="tooltip-text" [class.tooltip-visible]="isTooltipVisible()">
+                Il s'agit d'un trajet récurrent (ex: tous les jours ouvrés) sur cette période.
+              </div>
+            </div>
+          </div>
+          
+          <input
+            type="date"
+            id="dateFin"
+            formControlName="dateFin"
+            class="input-large w-full"
+            [min]="today"
+          />
+      </div>
     </div>
 
     <!-- Ville -->
