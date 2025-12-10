@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 import { LoginRequest, RegisterRequest } from '../models/auth.model';
@@ -104,9 +104,13 @@ export class AuthService {
           console.log('Session restored for user:', user);
           this.userSubject.next(user);
         }),
-        catchError(() => {
-          console.log('No active session found.');
-          this.userSubject.next(null);
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401 || error.status === 403) {
+            this.userSubject.next(null);
+          } else {
+            console.error('Erreur lors de la restauration de session:', error);
+            this.userSubject.next(null);
+          }
           return of(null);
         })
       )
