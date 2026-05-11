@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostListener, inject, input, OnDestroy, output, signal, ViewChild } from '@angular/core';
 import { ModalParticipantsInformations } from '../../../../shared/components/modal-participants-informations/modal-participants-informations';
 import { ModalCarInformations } from '../../../../shared/components/modal-car-informations/modal-car-informations';
 import { Trip } from '../../../../core/models/trip.model';
@@ -7,10 +7,11 @@ import { Subscribe, SubscribeRequest } from '../../../../core/models/subscribe.m
 import { SubscribeService } from '../../../../core/services/subscribe';
 import { Subject, takeUntil } from 'rxjs';
 import { Reservation } from '../../../../core/models/reservation.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-carpooling-details-modal',
-  imports: [ModalParticipantsInformations, ModalCarInformations],
+  imports: [ModalParticipantsInformations, ModalCarInformations, CommonModule],
   templateUrl: './carpooling-details-modal.html',
   styleUrl: './carpooling-details-modal.css',
 })
@@ -24,9 +25,11 @@ export class CarpoolingDetailsModal implements OnDestroy {
   carForModalCarInfos = signal<Car | undefined>(undefined);
   subscribers = signal<Subscribe[]>([]);
 
+  isTooltipVisible = signal(false);
+
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly subscribeService: SubscribeService) {
+  constructor(private readonly subscribeService: SubscribeService, private elRef: ElementRef ) {
     effect(() => {
       const currentTrip = this.tripDetails();
 
@@ -95,5 +98,16 @@ openModal() {
 
   onDialogClose() {
     this.closed.emit();
+  }
+
+  toggleTooltip(event: MouseEvent): void {
+    event.stopPropagation(); 
+    this.isTooltipVisible.update(visible => !visible);
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isTooltipVisible() && !this.elRef.nativeElement.contains(event.target)) {
+      this.isTooltipVisible.set(false);
+    }
   }
 }

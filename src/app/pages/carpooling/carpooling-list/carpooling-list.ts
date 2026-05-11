@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { CarpoolingCard } from "../carpooling-card/carpooling-card";
 import { Trip } from '../../../core/models/trip.model';
 import { TripService } from '../../../core/services/trip';
@@ -18,48 +18,20 @@ export class CarpoolingList {
   // Signal contenant tous les trajets
   allLoadedTrips = signal<Trip[]>([]);
 
-  // État de la pagination
-  currentPage = signal(0);
-  private pageSize = 5;
-  totalTripsCount = signal(0);
-  isLoading = signal(false);
+  // --- ENTRÉES (données reçues du parent) ---
+  trips = input.required<Trip[]>();
+  isLoading = input<boolean>(false);
+  canLoadMore = input<boolean>(false); 
 
-  constructor(private tripService: TripService) { }
+  // --- SORTIE (événement envoyé au parent) ---
+  loadMore = output<void>();
 
-  ngOnInit(): void {
-    this.loadTrips(this.currentPage(), this.pageSize);
-  }
-
-  private loadTrips(page: number, size: number): void {
-    if (this.isLoading()) {
-      console.log('Requête bloquée car isLoading est déjà TRUE.');
-      return;
-    }
-
-    this.isLoading.set(true);
-
-    this.tripService.getAllTrips(page, size).subscribe({
-      next: (response: Page<Trip>) => { 
-        this.allLoadedTrips.update(currentTrips => [...currentTrips, ...response.content]);
-        this.totalTripsCount.set(response.totalElements);
-        this.currentPage.set(response.number); 
-
-      },
-      error: (err) => {
-        console.error("Erreur lors de la récupération des trajets paginés:", err);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
-  }
+  constructor() { }
+  ngOnInit(): void {}
 
   // Affichage du "Voir plus" avec condition
-  showMoreButton = computed(() => {
-    return this.allLoadedTrips().length < this.totalTripsCount() && !this.isLoading();
-  });
-
-  loadMoreTrips(): void {
-    this.loadTrips(this.currentPage() + 1, this.pageSize);
+  onLoadMoreClick(): void {
+    console.log("Le bouton 'Voir plus' a été cliqué dans CarpoolingList. Émission de l'événement.");
+    this.loadMore.emit();
   }
 }

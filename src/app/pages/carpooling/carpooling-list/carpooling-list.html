@@ -1,25 +1,33 @@
 <div class="max-w-[650px] w-full mx-auto flex flex-col h-full gap-8 justify-content-evenly py-8">
-    @if (allLoadedTrips().length === 0 && isLoading()) {
-        <p>Chargement des trajets...</p>
-    } @else if (allLoadedTrips().length === 0 && !isLoading()) {
-        <p>Aucun trajet disponible pour le moment.</p>
-    } @else {
-        @for (trip of allLoadedTrips(); track trip.id) {
-            <app-carpooling-card [trip]="trip"/>
-        }@empty {
-            <p>Aucun trajet trouvé.</p>
-        }
-        @if (showMoreButton()) {
-            <button class="btn-primary self-center" (click)="loadMoreTrips()">
-                @if (isLoading()) {
-                    Chargement...
-                } @else {
-                    Voir plus
-                }
-            </button>
-        } @else if (!showMoreButton() && totalTripsCount() > 0) {
-            <p class="end-of-list-message">Vous avez vu tous les trajets disponibles.</p>
-        }
+  @if (isLoading() && trips().length === 0) {
+    <div class="flex flex-col items-center gap-4">
+      <p class="text-center text-gray-500 pt-10">Chargement des trajets...</p>
+      <img alt="Chargement..." src="assets/images/loading-gif.gif" class="w-25">
+    </div>
+  }
+
+  @if (trips().length > 0) {
+    @for (trip of trips(); track trip.id) {
+      <app-carpooling-card [trip]="trip" />
     }
+  }
+
+  @if (trips().length === 0 && !isLoading()) {
+    <p class="text-center text-gray-500 py-10">Aucun trajet ne correspond à votre recherche pour le moment.</p>
+  }
+
+  <!-- === BLOC FOOTER POUR "VOIR PLUS" OU FIN DE LISTE === -->
+  @if (canLoadMore()) {
+    <button class="btn-primary mx-auto my-4" (click)="onLoadMoreClick()" [disabled]="isLoading()">
+      @if(isLoading()){
+        <span>Chargement...</span>
+      } @else {
+        <span>Voir plus</span>
+      }
+    </button>
+  }
+  @if (!canLoadMore() && !isLoading() && trips().length > 0) {
+    <p class="text-center text-gray-500 my-4">Vous avez vu tous les trajets disponibles.</p>
+  }
 
 </div>
