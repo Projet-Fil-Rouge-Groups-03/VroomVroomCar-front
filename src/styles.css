@@ -228,16 +228,19 @@
 
   .table-vroom thead th,
   .table-vroom tbody td {
-    padding: 0.5rem 0.75rem;
-    font-family: var(--font-police);
-    color: var(--color-police);
+    padding: 0.25rem 0.5rem;
     text-align: center;
     height: 2.5rem;
     border-right: 1px solid var(--color-table-border);
   }
+  .table-vroom thead th {
+    font-size: clamp(0.8125rem, 0.7769rem + 0.1779vw, 0.9rem);
+    font-weight: 600;
+  }
 
   .table-vroom tbody td {
     border-bottom: 1px solid var(--color-table-border);
+    font-size: 0.75rem;
   }
 
   .table-vroom thead th:last-child,
@@ -250,6 +253,14 @@
 
   .table-vroom tbody tr:hover {
     background-color: rgba(168, 213, 186, 0.1);
+  }
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-container .table-vroom {
+    min-width: 600px;
   }
 
   .modal-details {

@@ -28,7 +28,6 @@ export class AuthService {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    // Dès que le service est créé, on tente de restaurer la session
     this.restoreSession();
   }
 

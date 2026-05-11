@@ -140,7 +140,6 @@ export class Register implements OnInit {
       ?.valueChanges.subscribe((addVehicle) => {
         if (addVehicle) {
           vehiculeForm.enable();
-          // Ajouter les validateurs pour tous les champs sauf infosSupp
           vehiculeForm
             .get('marque')
             ?.setValidators([Validators.required, Validators.minLength(2)]);
