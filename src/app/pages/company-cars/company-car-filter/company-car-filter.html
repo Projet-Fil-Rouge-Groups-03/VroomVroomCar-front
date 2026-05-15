@@ -1,1 +1,51 @@
-<p>company-car-filter works!</p>
+<div class="filter-bar">
+  <div class="filter-bar__inner">
+    <div class="filter-group filter-group--search">
+      <svg class="filter-group__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        class="filter-input"
+        placeholder="Rechercher (marque, modèle, immatriculation…)"
+        [(ngModel)]="filters.search"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <select class="filter-select" [(ngModel)]="filters.vehiculeStatus" (ngModelChange)="applyFilters()">
+        <option value="">Tous les statuts</option>
+        <option *ngFor="let s of vehiculeStatusOptions" [value]="s">{{ statusLabels[s] }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <select class="filter-select" [(ngModel)]="filters.motorisation" (ngModelChange)="applyFilters()">
+        <option value="">Toutes motorisations</option>
+        <option *ngFor="let m of motorisationOptions" [value]="m">{{ m }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <select class="filter-select" [(ngModel)]="filters.categorie" (ngModelChange)="applyFilters()">
+        <option value="">Toutes catégories</option>
+        <option *ngFor="let c of categorieOptions" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <input
+        type="text"
+        class="filter-input filter-input--short"
+        placeholder="Nb places"
+        [(ngModel)]="filters.nbDePlaces"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+
+    <button class="filter-reset" *ngIf="hasActiveFilters" (click)="resetFilters()" aria-label="Réinitialiser les filtres">
+      ✕ Réinitialiser
+    </button>
+  </div>
+</div>

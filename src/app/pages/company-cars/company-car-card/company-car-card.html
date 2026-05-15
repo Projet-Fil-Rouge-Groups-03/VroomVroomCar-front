@@ -1,1 +1,38 @@
-<p>company-car-card works!</p>
+<article class="car-card" (click)="onClick()" tabindex="0" (keydown.enter)="onClick()" role="button" [attr.aria-label]="car.marque + ' ' + car.modele">
+  <div class="car-card__image-wrapper">
+    <img
+      [src]="car.urlPhoto"
+      [alt]="car.marque + ' ' + car.modele"
+      class="car-card__image"
+      (error)="$any($event.target).src = 'assets/car-placeholder.svg'"
+    />
+    <span class="car-card__status" [ngClass]="getStatusClass(car.status)">
+      {{ getStatusLabel(car.status) }}
+    </span>
+  </div>
+
+  <div class="car-card__body">
+    <div class="car-card__header">
+      <h3 class="car-card__title">{{ car.marque }}</h3>
+      <p class="car-card__subtitle">{{ car.modele }}</p>
+    </div>
+
+    <div class="car-card__tags">
+      <span class="tag tag--motorisation">
+        {{ getMotorisationIcon(car.motorisation) }} {{ car.motorisation }}
+      </span>
+      <span class="tag tag--categorie">{{ car.categorie }}</span>
+    </div>
+
+    <div class="car-card__specs">
+      <div class="spec">
+        <span class="spec__icon">👥</span>
+        <span class="spec__value">{{ car.nbDePlaces }} places</span>
+      </div>
+      <div class="spec">
+        <span class="spec__icon">🌿</span>
+        <span class="spec__value">{{ car.pollution }}</span>
+      </div>
+    </div>
+  </div>
+</article>

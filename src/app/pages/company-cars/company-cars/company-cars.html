@@ -1,1 +1,40 @@
-<p>company-cars works!</p>
+<div class="company-car-page">
+  <div class="company-car-page__main">
+    <div class="company-car-page__content">
+      <section class="company-car-page__filter">
+        <app-company-car-filter
+          [cars]="allCars"
+          (filtersChanged)="onFiltersChanged($event)"
+        ></app-company-car-filter>
+      </section>
+
+      <section class="company-car-page__carousel">
+        <div class="company-car-page__carousel-header">
+          <h2 class="company-car-page__section-title">Véhicules disponibles</h2>
+          <span class="company-car-page__count">{{ filteredCars.length }} véhicule{{ filteredCars.length > 1 ? 's' : '' }}</span>
+        </div>
+        <app-company-car-carousel
+          [cars]="filteredCars"
+          (carSelected)="onCarSelected($event)"
+        ></app-company-car-carousel>
+      </section>
+    </div>
+
+    <aside class="company-car-page__sidebar">
+      <div class="ad-block ad-block--carglass">
+        <p class="ad-block__label">Pub Carglass</p>
+      </div>
+      <div class="ad-block ad-block--secondary">
+        <p class="ad-block__label">Pub pour être riche</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal -->
+  <app-company-car-details-modal
+    *ngIf="selectedCar"
+    [car]="selectedCar"
+    (closed)="onModalClosed()"
+    (reserved)="onCarReserved($event)"
+  ></app-company-car-details-modal>
+</div>

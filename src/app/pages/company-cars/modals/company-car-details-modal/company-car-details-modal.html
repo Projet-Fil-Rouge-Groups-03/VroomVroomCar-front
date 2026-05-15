@@ -1,1 +1,175 @@
-<p>company-car-details-modal works!</p>
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+  (click)="onOverlayClick($event)"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="'Détails ' + car.marque + ' ' + car.modele"
+>
+
+  <!-- Modal -->
+  <div
+    class="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Bouton fermeture -->
+    <button
+      class="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/10 text-lg transition hover:bg-black/20"
+      (click)="close()"
+      aria-label="Fermer"
+    >
+      ✕
+    </button>
+
+    <!-- Image -->
+    <div class="relative h-72 w-full overflow-hidden bg-gray-100">
+      <img
+        [src]="car.urlPhoto"
+        [alt]="car.marque + ' ' + car.modele"
+        class="h-full w-full object-cover"
+        (error)="$any($event.target).src = 'assets/car-placeholder.svg'"
+      />
+
+      <!-- Status -->
+      <span
+        class="absolute left-4 top-4 rounded-full px-4 py-2 text-sm font-semibold text-white"
+        [ngClass]="{
+          'bg-green-600': car.status === VehiculeStatus.EN_SERVICE,
+          'bg-red-600': car.status === VehiculeStatus.HORS_SERVICE,
+          'bg-orange-500': car.status === VehiculeStatus.REPARATION
+        }"
+      >
+        {{ getStatusLabel(car.status) }}
+      </span>
+    </div>
+
+    <!-- Contenu -->
+    <div class="p-6">
+
+      <!-- Header -->
+      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">
+            {{ car.marque }}
+            <span class="font-medium text-gray-500">
+              {{ car.modele }}
+            </span>
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+            {{ car.immatriculation }}
+          </p>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2">
+          <span class="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+            {{ getMotorisationIcon(car.motorisation) }}
+            {{ car.motorisation }}
+          </span>
+
+          <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+            {{ car.categorie }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Infos -->
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+
+        <div class="rounded-xl bg-gray-50 p-4">
+          <span class="block text-sm text-gray-500">Places</span>
+          <span class="mt-1 block text-lg font-semibold">
+            👥 {{ car.nbDePlaces }}
+          </span>
+        </div>
+
+        <div class="rounded-xl bg-gray-50 p-4">
+          <span class="block text-sm text-gray-500">Pollution</span>
+          <span class="mt-1 block text-lg font-semibold">
+            🌿 {{ car.pollution }}
+          </span>
+        </div>
+
+        <div class="rounded-xl bg-gray-50 p-4">
+          <span class="block text-sm text-gray-500">CO₂ / km</span>
+          <span class="mt-1 block text-lg font-semibold">
+            💨 {{ car.co2ParKm }} g/km
+          </span>
+        </div>
+
+        <div class="rounded-xl bg-gray-50 p-4">
+          <span class="block text-sm text-gray-500">Motorisation</span>
+          <span class="mt-1 block text-lg font-semibold">
+            {{ getMotorisationIcon(car.motorisation) }}
+            {{ car.motorisation }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Infos supplémentaires -->
+      <div
+        class="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4"
+        *ngIf="car.infosSupp"
+      >
+        <span class="block text-sm font-medium text-gray-500">
+          Informations supplémentaires
+        </span>
+
+        <p class="mt-2 text-gray-700">
+          {{ car.infosSupp }}
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <form [formGroup]="form" (ngSubmit)="reserve()" class="space-y-4 p-4">
+
+        <div class="grid grid-cols-2 gap-4">
+          <input type="date" formControlName="dateDebut"
+                class="rounded border p-2" />
+
+          <input type="date" formControlName="dateFin"
+                class="rounded border p-2" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <input class="rounded border p-2" placeholder="Ville de départ" formControlName="villeDepart">
+          <input class="rounded border p-2" placeholder="Lieu de départ" formControlName="lieuDepart">
+
+          <input class="rounded border p-2" placeholder="Ville d'arrivée" formControlName="villeArrivee">
+          <input class="rounded border p-2" placeholder="Lieu d'arrivée" formControlName="lieuArrivee">
+        </div>
+
+        <label class="flex items-center gap-2">
+          <input type="checkbox" formControlName="covoiturage">
+          Proposer au covoiturage
+        </label>
+
+        <!-- Actions -->
+        <div class="flex justify-between pt-4">
+
+          <button type="button"
+                  (click)="close()"
+                  class="rounded bg-gray-200 px-4 py-2">
+            Annuler
+          </button>
+
+          <button type="submit"
+              [disabled]="car.status !== VehiculeStatus.EN_SERVICE"
+              class="rounded bg-green-500 px-4 py-2 text-white">
+            Valider
+          </button>
+        </div>
+        <p
+          class="mt-3 text-center text-sm text-red-500"
+          *ngIf="car.status !== VehiculeStatus.EN_SERVICE"
+        >
+          Ce véhicule n'est pas disponible à la réservation.
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
