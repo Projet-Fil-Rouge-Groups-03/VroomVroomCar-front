@@ -1,5 +1,6 @@
 import {
   Component,
+  inject,
   input,
   OnChanges,
   signal,
@@ -21,6 +22,8 @@ import { TripService } from '../../../core/services/trip';
 import { ReservationService } from '../../../core/services/reservation';
 import { DeleteConfirmationModal } from '../modals/delete-confirmation-modal/delete-confirmation-modal';
 import { SubscribeService } from '../../../core/services/subscribe';
+import { UserService } from '../../../core/services/user';
+import { AuthService } from '../../../core/services/auth';
 
 export interface DisplayItem {
   id: number;
@@ -32,6 +35,7 @@ export interface DisplayItem {
   car?: Car;
   nbPlacesRestantes?: number;
   originalData: Trip | Reservation;
+  organisateurId: number;
 }
 
 @Component({
@@ -66,6 +70,7 @@ export class NextCarpools implements OnChanges {
   private isLoading = false;
   modalAddEditData: WritableSignal<Partial<Trip> | null> = signal(null);
   detailsModalItem: WritableSignal<DisplayItem | null> = signal(null);
+  authService = inject(AuthService);
 
   constructor(
     private tripService: TripService,
@@ -131,6 +136,7 @@ export class NextCarpools implements OnChanges {
       car: trip.car,
       nbPlacesRestantes: trip.nbPlacesRestantes,
       originalData: trip,
+      organisateurId: trip.organisateurId,
     }));
 
     // 2. Transformer les Réservations
@@ -143,6 +149,7 @@ export class NextCarpools implements OnChanges {
       villeArrivee: 'Véhicule de service',
       car: res.car,
       originalData: res,
+      organisateurId: -1,
     }));
 
     // 3. Fusionner et Trier
@@ -281,10 +288,12 @@ export class NextCarpools implements OnChanges {
 
   getOrganizerName(item: DisplayItem | null): string {
     if (!item) return '';
+    var org : any = undefined;
     if (item.type === 'TRIP') {
-      const org = (item.originalData as Trip).organisateur;
-      return org ? `${org.prenom} ${org.nom}` : 'Organisateur inconnu';
+      org = (item.originalData as Trip).organisateur;
+    } else if (item.type === 'RESERVATION'){
+      org = this.authService.currentUser;
     }
-    return 'Réservation de service';
+     return org ? `${org.prenom} ${org.nom}` : 'Organisateur inconnu';
   }
 }

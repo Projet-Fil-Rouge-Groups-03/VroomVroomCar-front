@@ -68,7 +68,7 @@
 
       <!-- Affichage des Actions -->
       <td class="cursor-default py-0.5">
-        @if (item.type === 'TRIP') {
+        @if (item.type === 'TRIP' &&  currentUser()!.id == item.organisateurId) {
         <div style="display: inline-block; width: 50%; text-align: left">
           <button class="cursor-pointer text-xl" (click)="$event.stopPropagation(); openModalEdit(item)">
             ✏️
