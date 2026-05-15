@@ -62,13 +62,13 @@
           >{{ item.nbPlacesRestantes }}/{{ item.car?.nbDePlaces || "?" }}</span
         >
         } @else {
-        <span>-</span>
+        <span>{{ item.car?.nbDePlaces || "-" }} places</span>
         }
       </td>
 
       <!-- Affichage des Actions -->
       <td class="cursor-default py-0.5">
-        @if (item.type === 'TRIP') {
+        @if (getOrganizerId(item) === userId()) {
         <div style="display: inline-block; width: 50%; text-align: left">
           <button class="cursor-pointer text-xl" (click)="$event.stopPropagation(); openModalEdit(item)">
             ✏️
@@ -121,3 +121,13 @@
   [organizer]="getOrganizerName(detailsModalItem())"
   (closed)="onDetailsModalClosed()"
 ></app-carpooling-details-modal>
+
+<!-- Modale d'édition de réservation -->
+@if (showReservationModal() && reservationToEdit()) {
+<app-company-car-details-modal
+  [car]="reservationToEdit()!.car"
+  [existingReservation]="reservationToEdit()!.reservation"
+  (closed)="closeReservationModal()"
+  (updated)="onReservationUpdated($event)"
+></app-company-car-details-modal>
+}

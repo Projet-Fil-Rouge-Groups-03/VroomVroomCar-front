@@ -26,6 +26,7 @@ export interface UserRequest {
 }
 
 export interface UserSummary {
+  id: number;
   nom: string;
   prenom: string;
 }

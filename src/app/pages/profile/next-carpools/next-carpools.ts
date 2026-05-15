@@ -13,10 +13,12 @@ import { EMPTY, forkJoin, Observable, tap } from 'rxjs'; // On garde forkJoin po
 // --- Imports des modèles et services ---
 import { AddEditCarpoolingModal } from '../modals/add-edit-carpooling-modal/add-edit-carpooling-modal';
 import { CarpoolingDetailsModal } from '../../carpooling/modals/carpooling-details-modal/carpooling-details-modal';
+import { CompanyCarDetailsModal } from '../../company-cars/modals/company-car-details-modal/company-car-details-modal';
 import { Trip } from '../../../core/models/trip.model';
-import { Reservation } from '../../../core/models/reservation.model';
+import { Reservation, ReservationRequest } from '../../../core/models/reservation.model';
 import { User } from '../../../core/models/user.model';
 import { Car } from '../../../core/models/car.model';
+import { CompanyCar } from '../../../core/models/company-car.model';
 import { TripService } from '../../../core/services/trip';
 import { ReservationService } from '../../../core/services/reservation';
 import { DeleteConfirmationModal } from '../modals/delete-confirmation-modal/delete-confirmation-modal';
@@ -41,6 +43,7 @@ export interface DisplayItem {
     AddEditCarpoolingModal,
     CommonModule,
     CarpoolingDetailsModal,
+    CompanyCarDetailsModal,
     DeleteConfirmationModal,
   ],
   templateUrl: './next-carpools.html',
@@ -66,6 +69,8 @@ export class NextCarpools implements OnChanges {
   private isLoading = false;
   modalAddEditData: WritableSignal<Partial<Trip> | null> = signal(null);
   detailsModalItem: WritableSignal<DisplayItem | null> = signal(null);
+  showReservationModal = signal(false);
+  reservationToEdit: WritableSignal<{ reservation: Reservation; car: CompanyCar } | null> = signal(null);
 
   constructor(
     private tripService: TripService,
@@ -139,9 +144,10 @@ export class NextCarpools implements OnChanges {
       type: 'RESERVATION',
       dateDebut: res.dateDebut,
       heureDepart: ' ',
-      villeDepart: `${res.car?.marque || ''} ${res.car?.modele || ''}`,
-      villeArrivee: 'Véhicule de service',
+      villeDepart: ' ',
+      villeArrivee: res.dateFin ? new Date(res.dateFin).toLocaleDateString('fr-FR') : '-',
       car: res.car,
+      nbPlacesRestantes: res.car?.nbDePlaces, // Nombre de places du véhicule
       originalData: res,
     }));
 
@@ -174,6 +180,15 @@ export class NextCarpools implements OnChanges {
   openModalEdit(item: DisplayItem) {
     if (item.type === 'TRIP') {
       this.modalAddEditData.set(item.originalData as Trip);
+    } else if (item.type === 'RESERVATION') {
+      const reservation = item.originalData as Reservation;
+      if (reservation.car) {
+        this.reservationToEdit.set({ 
+          reservation: reservation, 
+          car: reservation.car as CompanyCar 
+        });
+        this.showReservationModal.set(true);
+      }
     }
   }
 
@@ -279,6 +294,25 @@ export class NextCarpools implements OnChanges {
     this.detailsModalItem.set(null);
   }
 
+  closeReservationModal() {
+    this.showReservationModal.set(false);
+    this.reservationToEdit.set(null);
+  }
+
+  onReservationUpdated(updatedReservation: ReservationRequest & { id: number }) {
+    this.reservationService.updateReservation(updatedReservation.id, updatedReservation).subscribe({
+      next: () => {
+        console.log('Réservation mise à jour avec succès');
+        const user = this.currentUser();
+        if (user) {
+          this.refreshAllData(user.id);
+        }
+        this.closeReservationModal();
+      },
+      error: (err) => console.error('Erreur lors de la mise à jour de la réservation:', err),
+    });
+  }
+
   getOrganizerName(item: DisplayItem | null): string {
     if (!item) return '';
     if (item.type === 'TRIP') {
@@ -286,5 +320,22 @@ export class NextCarpools implements OnChanges {
       return org ? `${org.prenom} ${org.nom}` : 'Organisateur inconnu';
     }
     return 'Réservation de service';
+  }
+
+  
+  getOrganizerId(item: DisplayItem | null): number {
+    if (!item) return -1;
+    if (item.type === 'TRIP') {
+      const org = (item.originalData as Trip).organisateur;
+      return org ? org.id : -1;
+    }
+    if (item.type === 'RESERVATION') {
+      return (item.originalData as Reservation).userId;
+    }
+    return -1;
+  }
+
+  userId(): number | null {
+    return this.currentUser()?.id ?? null;
   }
 }
